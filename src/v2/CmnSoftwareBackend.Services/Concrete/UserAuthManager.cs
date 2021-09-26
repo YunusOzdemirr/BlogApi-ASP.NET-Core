@@ -66,7 +66,7 @@ namespace CmnSoftwareBackend.Services.Concrete
                     };
                     using (TransactionScope transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                     {
-                        DbContext.Users.Update(user);
+                        //DbContext.Users.Update(user);
                         await DbContext.UserTokens.AddAsync(userToken);
                         await DbContext.SaveChangesAsync();
                         transactionScope.Complete();
