@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Concrete\" />
+    <None Remove="Dtos\" />
+    <None Remove="ComplexTypes\" />
+    <None Remove="Dtos\UserDtos\" />
+    <None Remove="Dtos\UserTokensDtos\" />
+    <None Remove="Dtos\EmailDto\" />
+    <None Remove="Dtos\OperationClaimsDtos\" />
+    <None Remove="Dtos\UserNotificationDtos\" />
+    <None Remove="Dtos\UserPictureUpdateDtos\" />
+    <None Remove="Dtos\UserOperationClaimDtos\" />
+    <None Remove="Dtos\CategoryDtos\" />
+    <None Remove="Dtos\LandingEmailDtos\" />
+    <None Remove="DiscordRichPresence" />
+    <None Remove="Dtos\ArticleDtos\" />
+    <None Remove="Dtos\ArticlePictureDtos\" />
+    <None Remove="Dtos\CommentWithUserDtos\" />
+    <None Remove="Dtos\CommentWithoutUserDtos\" />
+    <None Remove="Dtos\CategoryAndArticleDtos\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Concrete\" />
+    <Folder Include="Dtos\" />
+    <Folder Include="ComplexTypes\" />
+    <Folder Include="Dtos\UserDtos\" />
+    <Folder Include="Dtos\UserTokensDtos\" />
+    <Folder Include="Dtos\EmailDtos\" />
+    <Folder Include="Dtos\OperationClaimDtos\" />
+    <Folder Include="Dtos\UserNotificationDtos\" />
+    <Folder Include="Dtos\UserPictureUpdateDtos\" />
+    <Folder Include="Dtos\UserOperationClaimDtos\" />
+    <Folder Include="Dtos\CategoryDtos\" />
+    <Folder Include="Dtos\LandingEmailDtos\" />
+    <Folder Include="Dtos\ArticleDtos\" />
+    <Folder Include="Dtos\ArticlePictureDtos\" />
+    <Folder Include="Dtos\CommentWithUserDtos\" />
+    <Folder Include="Dtos\CommentWithoutUserDtos\" />
+    <Folder Include="Dtos\CategoryAndArticleDtos\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CmnSoftwareBackend.Shared\CmnSoftwareBackend.Shared.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+  </ItemGroup>
+</Project>

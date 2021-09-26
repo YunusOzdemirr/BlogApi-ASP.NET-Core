@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Entities\" />
+    <None Remove="Entities\Abstract\" />
+    <None Remove="Entities\ComplexTypes\" />
+    <None Remove="Entities\Concrete\" />
+    <None Remove="Extensions\" />
+    <None Remove="Utilities\" />
+    <None Remove="Utilities\Generators\" />
+    <None Remove="Utilities\Hashing\" />
+    <None Remove="Utilities\Results\" />
+    <None Remove="Utilities\Security\" />
+    <None Remove="Utilities\Validation\" />
+    <None Remove="Utilities\Results\Abstract\" />
+    <None Remove="Utilities\Results\ComplexTypes\" />
+    <None Remove="Utilities\Results\Concrete\" />
+    <None Remove="Utilities\Security\Encryption\" />
+    <None Remove="Utilities\Security\Jwt\" />
+    <None Remove="Utilities\Validation\FluentValidation\" />
+    <None Remove="FluentValidation" />
+    <None Remove="Microsoft.IdentityModel.Tokens" />
+    <None Remove="System.IdentityModel.Tokens.Jwt" />
+    <None Remove="DiscordRichPresence" />
+    <None Remove="Utilities\Exceptions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Entities\" />
+    <Folder Include="Entities\Abstract\" />
+    <Folder Include="Entities\ComplexTypes\" />
+    <Folder Include="Entities\Concrete\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Utilities\" />
+    <Folder Include="Utilities\Generators\" />
+    <Folder Include="Utilities\Hashing\" />
+    <Folder Include="Utilities\Results\" />
+    <Folder Include="Utilities\Security\" />
+    <Folder Include="Utilities\Validation\" />
+    <Folder Include="Utilities\Results\Abstract\" />
+    <Folder Include="Utilities\Results\ComplexTypes\" />
+    <Folder Include="Utilities\Results\Concrete\" />
+    <Folder Include="Utilities\Security\Encryption\" />
+    <Folder Include="Utilities\Security\Jwt\" />
+    <Folder Include="Utilities\Validation\FluentValidation\" />
+    <Folder Include="Utilities\Exceptions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="10.3.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.12.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.12.0" />
+    <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+  </ItemGroup>
+</Project>
