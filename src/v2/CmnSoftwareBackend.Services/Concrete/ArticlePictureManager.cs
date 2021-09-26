@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -25,7 +26,9 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> AddAsync(ArticlePictureAddDto articlePictureAddDto)
         {
+            //article is a have only 3 articlePicture
             var articlePictureCount =await DbContext.ArticlePictures.AsNoTracking().CountAsync(ac => ac.ArticleId == articlePictureAddDto.ArticleId);
+            //is a real article
             var article = await DbContext.Articles.SingleOrDefaultAsync(a => a.Id == articlePictureAddDto.ArticleId);
             if (article == null)
             {
@@ -35,9 +38,10 @@ namespace CmnSoftwareBackend.Services.Concrete
             {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makaleye daha fazla resim koyamazsınız.", "ArticleCount"));
             }
-
+            //mapping
             var articlePicture = Mapper.Map<ArticlePicture>(articlePictureAddDto);
             articlePicture.CreatedByUserId = article.UserId;
+            article.ModifiedDate = DateTime.Now;
             await DbContext.ArticlePictures.AddAsync(articlePicture);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, "Resim başarıyla eklendi", articlePicture);
@@ -91,13 +95,39 @@ namespace CmnSoftwareBackend.Services.Concrete
             });
         }
 
-        public Task<IDataResult> GetAllWithoutPagingAsync(bool? isActive, bool? isDeleted, OrderBy orderBy, bool isAscending, bool includeArticle)
+        public async Task<IDataResult> GetAllWithoutPagingAsync(bool? isActive, bool? isDeleted, OrderBy orderBy, bool isAscending, bool includeArticle)
         {
-            throw new NotImplementedException();
+            IQueryable<ArticlePicture> query = DbContext.Set<ArticlePicture>();
+            if (isActive.HasValue) query = query.Where(ap => ap.IsActive == isActive);
+            if (isDeleted.HasValue) query = query.Where(ap => ap.IsDeleted == isDeleted);
+            if (includeArticle) query = query.AsNoTracking().Include(ap => ap.Article);
+
+            var articlePictureCount = await query.AsNoTracking().CountAsync();
+            switch (orderBy)
+            {
+                case OrderBy.Id:
+                    query = isAscending ? query.OrderBy(ap => ap.Id) : query.OrderByDescending(ap => ap.Id);
+                    break;
+                case OrderBy.Az:
+                    query = isAscending ? query.OrderBy(ap => ap.Article.Title);query.OrderByDescending(ap => ap.Article.Title);
+                    //case OrderBy.CreatedDate
+                    break;
+                default:
+                    query = isAscending ? query.OrderBy(ap => ap.CreatedDate) : query.OrderByDescending(ap => ap.CreatedDate);
+                    break;
+            }
+            return new DataResult(ResultStatus.Success, new ArticlePictureListDto
+            {
+                ArticlePictures = await query.Select(ap => Mapper.Map<ArticlePictureDto>(ap)).ToListAsync(),
+                TotalCount=articlePictureCount,
+                IsAscending=isAscending
+            });
+
         }
 
         public async Task<IDataResult> GetByIdAsync(int articlePictureId, bool includeArticle)
         {
+            List<Article> article =await DbContext.Articles.ToListAsync();
             IQueryable<ArticlePicture> query = DbContext.Set<ArticlePicture>();
             if (includeArticle) query = query.Include(a => a.Article);
             var articlePicture = await query.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articlePictureId);
