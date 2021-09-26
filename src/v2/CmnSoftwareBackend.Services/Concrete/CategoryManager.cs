@@ -24,11 +24,11 @@ namespace CmnSoftwareBackend.Services.Concrete
         public CategoryManager(CmnDbContext dbContext, IMapper mapper) : base(dbContext, mapper)
         {
         }
-        
+
 
         public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy)
         {
-         
+
             IQueryable<Category> query = DbContext.Set<Category>();
             if (isActive.HasValue) query = query.Where(c => c.IsActive == isActive.Value);
             if (isDeleted.HasValue) query = query.Where(c => c.IsDeleted == isDeleted.Value);
@@ -68,22 +68,19 @@ namespace CmnSoftwareBackend.Services.Concrete
             {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori bulunmamakta", "categoryId"));
             }
-
-            var categoryDto = Mapper.Map<CategoryDto>(category);
-            return new DataResult(ResultStatus.Success, categoryDto);
+            return new DataResult(ResultStatus.Success, category);
         }
 
         public async Task<IDataResult> AddAsync(CategoryAddDto categoryAddDto)
         {
             ValidationTool.Validate(new CategoryAddDtoValidator(), categoryAddDto);
-          
 
             if (await DbContext.Categories.AnyAsync(c => c.Name == categoryAddDto.Name))
             {
                 //return new DataResult(ResultStatus.Warning,"Böyle bir kategori mevcut","NameExists");
-                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori zaten mevcut.", "Name"));
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori mevcut.", "Name"));
             }
-            
+
             var category = Mapper.Map<Category>(categoryAddDto);
             await DbContext.AddAsync(category);
             await DbContext.SaveChangesAsync();
@@ -93,8 +90,7 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> UpdateAsync(CategoryUpdateDto categoryUpdateDto)
         {
-             ValidationTool.Validate(new CategoryUpdateDtoValidator(), categoryUpdateDto);
-           
+            ValidationTool.Validate(new CategoryUpdateDtoValidator(), categoryUpdateDto);
 
             var oldCategory = await DbContext.Categories.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == categoryUpdateDto.Id);
@@ -104,7 +100,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             }
 
             var newCategory = Mapper.Map<CategoryUpdateDto, Category>(categoryUpdateDto, oldCategory);
-            DbContext.Update(newCategory);
+            DbContext.Categories.Update(newCategory);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success,
                 $"{newCategory.Name} adlı kategori güncellenmiştir", Mapper.Map<CategoryDto>(newCategory));
@@ -123,7 +119,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             DbContext.Categories.Update(category);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{category.Name} adlı kategori silinmiştir.",
-                Mapper.Map<CategoryDto>(category));
+                category);
         }
 
         public async Task<IResult> HardDeleteAsync(int categoryId)
@@ -131,7 +127,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             var category = await DbContext.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == categoryId);
             if (category == null)
             {
-                throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Böyle bir kategori bulunmamakta","categoryId"));
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori bulunmamakta", "categoryId"));
             }
             DbContext.Remove(category);
             await DbContext.SaveChangesAsync();

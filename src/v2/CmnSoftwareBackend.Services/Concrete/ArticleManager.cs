@@ -30,10 +30,10 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, $"{articleAddDto.UserName} tarafından eklendi", article);
         }
 
-        public async Task<IDataResult> DeleteAsync(int articleId,Guid CreatedByUserId)
+        public async Task<IDataResult> DeleteAsync(int articleId, Guid CreatedByUserId)
         {
             var article = await DbContext.Articles.AsNoTracking().FirstOrDefaultAsync(a => a.Id == articleId);
-            if (article==null)
+            if (article == null)
             {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir article mevcut değil", "Id"));
             }
@@ -45,15 +45,15 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla silinmiştir", article);
         }
 
-        public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy,bool includeArticlePicture)
+        public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<IDataResult> GetByIdAsync(int articleId,bool includeArticlePicture)
+        public async Task<IDataResult> GetByIdAsync(int articleId, bool includeArticlePicture)
         {
-            var article = await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(a=>a.Id==articleId);
-            if (article==null)
+            var article = await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articleId);
+            if (article == null)
             {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı", "Id"));
             }
@@ -62,8 +62,8 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IResult> HardDeleteAsync(int articleId)
         {
-            var article = await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(a=>a.Id==articleId);
-            if (article==null)
+            var article = await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articleId);
+            if (article == null)
             {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı.", "Id"));
             }
@@ -74,12 +74,12 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> UpdateAsync(ArticleUpdateDto articleUpdateDto)
         {
-            var oldArticle = await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(a=>a.Id==articleUpdateDto.Id);
-            if (oldArticle==null)
+            var oldArticle = await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articleUpdateDto.Id);
+            if (oldArticle == null)
             {
-                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunmamakta","Id"));
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunmamakta", "Id"));
             }
-            var newArticle=Mapper.Map<ArticleUpdateDto,Article>(articleUpdateDto,oldArticle);
+            var newArticle = Mapper.Map<ArticleUpdateDto, Article>(articleUpdateDto, oldArticle);
             DbContext.Articles.Update(newArticle);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, "Başarıyla güncelleştirildi", newArticle);

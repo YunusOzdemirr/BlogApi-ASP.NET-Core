@@ -27,7 +27,7 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> AddAsync(ArticlePictureAddDto articlePictureAddDto)
         {
             //article is a have only 3 articlePicture
-            var articlePictureCount =await DbContext.ArticlePictures.AsNoTracking().CountAsync(ac => ac.ArticleId == articlePictureAddDto.ArticleId);
+            var articlePictureCount = await DbContext.ArticlePictures.AsNoTracking().CountAsync(ac => ac.ArticleId == articlePictureAddDto.ArticleId);
             //is a real article
             var article = await DbContext.Articles.SingleOrDefaultAsync(a => a.Id == articlePictureAddDto.ArticleId);
             if (article == null)
@@ -109,7 +109,7 @@ namespace CmnSoftwareBackend.Services.Concrete
                     query = isAscending ? query.OrderBy(ap => ap.Id) : query.OrderByDescending(ap => ap.Id);
                     break;
                 case OrderBy.Az:
-                    query = isAscending ? query.OrderBy(ap => ap.Article.Title);query.OrderByDescending(ap => ap.Article.Title);
+                    query = isAscending ? query.OrderBy(ap => ap.Article.Title) : query.OrderByDescending(ap => ap.Article.Title);
                     //case OrderBy.CreatedDate
                     break;
                 default:
@@ -119,15 +119,15 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, new ArticlePictureListDto
             {
                 ArticlePictures = await query.Select(ap => Mapper.Map<ArticlePictureDto>(ap)).ToListAsync(),
-                TotalCount=articlePictureCount,
-                IsAscending=isAscending
+                TotalCount = articlePictureCount,
+                IsAscending = isAscending
             });
 
         }
 
         public async Task<IDataResult> GetByIdAsync(int articlePictureId, bool includeArticle)
         {
-            List<Article> article =await DbContext.Articles.ToListAsync();
+            List<Article> article = await DbContext.Articles.ToListAsync();
             IQueryable<ArticlePicture> query = DbContext.Set<ArticlePicture>();
             if (includeArticle) query = query.Include(a => a.Article);
             var articlePicture = await query.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articlePictureId);
