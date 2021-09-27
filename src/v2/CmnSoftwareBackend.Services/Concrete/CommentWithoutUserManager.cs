@@ -48,12 +48,36 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, "Başarıyla bu yorum silindi", comment);
         }
 
-        public Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticle)
+        public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticle)
         {
-            // ----------------------------------------------------------------------------------------------------------------------
-            // ----------------------------------------------------------------------------------------------------------------------
-            // ----------------------------------------------------------------------------------------------------------------------
-            throw new NotImplementedException();
+            IQueryable<CommentWithoutUser> query = DbContext.Set<CommentWithoutUser>();
+            if (isActive.HasValue) query = query.Where(a => a.IsActive == isActive);
+            if (isDeleted.HasValue) query = query.Where(a => a.IsDeleted == isDeleted);
+            if (includeArticle) query = query.AsNoTracking().Include(a=>a.Article);
+
+            var commentCount =await query.AsNoTracking().CountAsync();
+            pageSize = pageSize > 100 ? 100 : pageSize;
+            switch (orderBy)
+            {
+                case OrderBy.Id:
+                        query = isAscending ? query.OrderBy(a => a.Id) : query.OrderByDescending(a => a.Id);
+                    break;
+                case OrderBy.Az:
+                    query = isAscending ? query.OrderBy(a => a.UserName) : query.OrderByDescending(a => a.UserName);
+                    break;
+                default:
+                    query = isAscending ? query.OrderBy(a => a.CreatedDate) : query.OrderByDescending(a => a.CreatedDate);
+                    break;
+            }
+            return new DataResult(ResultStatus.Success,new CommentWithoutUserListDto
+            {
+                //    ArticlePictures = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(ap => Mapper.Map<ArticlePictureDto>(ap)).ToListAsync(),
+                CommentWithoutUsers =await query.Skip((currentPage-1)*pageSize).Take(pageSize).Select(a=>Mapper.Map<CommentWithoutUser>(a)).ToListAsync(),
+                CurrentPage=currentPage,
+                TotalCount=commentCount,
+                PageSize=pageSize,
+                IsAscending=isAscending
+            });
         }
 
         public async Task<IDataResult> GetByIdAsync(int commentWithoutUserId, bool includeArticle)

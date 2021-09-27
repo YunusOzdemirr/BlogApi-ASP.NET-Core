@@ -32,6 +32,7 @@ namespace CmnSoftwareBackend.Services.Concrete
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale başlığı daha önceden kullanılmış biraz özgün olabilirsin :)", "Title"));
 
             var article = Mapper.Map<Article>(articleAddDto);
+            article.CreatedByUserId = article.UserId;
             DbContext.Articles.Add(article);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{articleAddDto.UserName} tarafından eklendi", articleAddDto);
