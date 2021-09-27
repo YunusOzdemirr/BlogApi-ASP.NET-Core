@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -81,23 +82,23 @@ namespace CmnSoftwareBackend.Services.Concrete
             await DbContext.AddAsync(category);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{category.Name} adlı kategori başarıyla eklendi",
-                Mapper.Map<CategoryDto>(category));
+                categoryAddDto);
         }
 
         public async Task<IDataResult> UpdateAsync(CategoryUpdateDto categoryUpdateDto)
         {
             ValidationTool.Validate(new CategoryUpdateDtoValidator(), categoryUpdateDto);
 
-            var oldCategory = await DbContext.Categories.AsNoTracking()
-                .FirstOrDefaultAsync(c => c.Id == categoryUpdateDto.Id);
+            var oldCategory = await DbContext.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == categoryUpdateDto.Id);
             if (oldCategory == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori bulunmamakta.", "categoryId"));
 
             var newCategory = Mapper.Map<CategoryUpdateDto, Category>(categoryUpdateDto, oldCategory);
+            newCategory.ModifiedDate = DateTime.Now;
             DbContext.Categories.Update(newCategory);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success,
-                $"{newCategory.Name} adlı kategori güncellenmiştir", Mapper.Map<CategoryDto>(newCategory));
+                $"{newCategory.Name} adlı kategori güncellenmiştir", categoryUpdateDto);
         }
 
         public async Task<IDataResult> DeleteAsync(int categoryId)
@@ -105,7 +106,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             var category = await DbContext.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == categoryId);
             if (category == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori bulunmamakta", "categoryId"));
-
+            category.ModifiedDate = DateTime.Now;
             category.IsActive = false;
             category.IsDeleted = true;
             //DbContext.Categories.Update(category);

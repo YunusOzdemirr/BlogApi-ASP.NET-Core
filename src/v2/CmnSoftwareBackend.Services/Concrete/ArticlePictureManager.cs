@@ -38,7 +38,6 @@ namespace CmnSoftwareBackend.Services.Concrete
             //mapping
             var articlePicture = Mapper.Map<ArticlePicture>(articlePictureAddDto);
             articlePicture.CreatedByUserId = article.UserId;
-            article.ModifiedDate = DateTime.Now;
             await DbContext.ArticlePictures.AddAsync(articlePicture);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, "Resim başarıyla eklendi", articlePicture);
@@ -126,30 +125,27 @@ namespace CmnSoftwareBackend.Services.Concrete
             if (articlePicture == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı", "Id"));
 
-
             if (includeArticle) query = query.Include(a => a.Article);
-
-            return new DataResult(ResultStatus.Success, query);
+            return new DataResult(ResultStatus.Success, articlePicture);
         }
 
         public async Task<IResult> HardDeleteAsync(int articlePictureId)
         {
             var articlePicture = await DbContext.ArticlePictures.SingleOrDefaultAsync(a => a.Id == articlePictureId);
             if (articlePicture == null)
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale resmi bulunamadı", "Id"));
-
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale resmi bulunamadı", "Id"));
 
             DbContext.ArticlePictures.Remove(articlePicture);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, "Resim başarıyla silindi", articlePicture);
         }
-        //Changes for check the branch
+
         public async Task<IDataResult> UpdateAsync(ArticlePictureUpdateDto articlePictureUpdateDto)
         {
             var oldArticlePicture = await DbContext.ArticlePictures.Include(ap => ap.Article).SingleOrDefaultAsync(ap => ap.Id == articlePictureUpdateDto.Id);
 
             if (oldArticlePicture == null && oldArticlePicture.Article.CreatedByUserId != oldArticlePicture.CreatedByUserId && oldArticlePicture.Article == null)
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı", "InvalidUser"));
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı", "InvalidUser"));
 
             var newArticlePicture = Mapper.Map<ArticlePictureUpdateDto, ArticlePicture>(articlePictureUpdateDto);
             newArticlePicture.ModifiedDate = DateTime.Now;
