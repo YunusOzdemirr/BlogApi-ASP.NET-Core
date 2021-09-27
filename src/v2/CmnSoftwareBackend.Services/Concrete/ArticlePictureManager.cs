@@ -127,15 +127,15 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> GetByIdAsync(int articlePictureId, bool includeArticle)
         {
-            List<Article> article = await DbContext.Articles.ToListAsync();
             IQueryable<ArticlePicture> query = DbContext.Set<ArticlePicture>();
-            if (includeArticle) query = query.Include(a => a.Article);
             var articlePicture = await query.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articlePictureId);
             if (articlePicture == null)
             {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı", "Id"));
             }
-            return new DataResult(ResultStatus.Success, articlePicture);
+            if (includeArticle) query = query.Include(a => a.Article);
+
+            return new DataResult(ResultStatus.Success, query);
         }
 
         public async Task<IResult> HardDeleteAsync(int articlePictureId)
@@ -147,7 +147,7 @@ namespace CmnSoftwareBackend.Services.Concrete
                 await DbContext.SaveChangesAsync();
                 return new DataResult(ResultStatus.Success, "Resim başarıyla silindi", articlePicture);
             }
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale resmi bulunmamakta", "Id"));
+            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale resmi bulunamadı", "Id"));
         }
 
         public async Task<IDataResult> UpdateAsync(ArticlePictureUpdateDto articlePictureUpdateDto)
@@ -162,7 +162,7 @@ namespace CmnSoftwareBackend.Services.Concrete
                 await DbContext.SaveChangesAsync();
                 return new DataResult(ResultStatus.Success, "");
             }
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale resmi size ait değil", "InvalidUser"));
+            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı", "InvalidUser"));
 
         }
     }
