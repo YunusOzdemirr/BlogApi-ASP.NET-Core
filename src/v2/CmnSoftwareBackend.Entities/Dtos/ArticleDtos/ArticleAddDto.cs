@@ -18,6 +18,5 @@ namespace CmnSoftwareBackend.Entities.Dtos.ArticleDtos
         public int TotalStarCount { get; set; }
         public Guid UserId { get; set; }
         public int? ArticlePictureId { get; set; }
-        public Guid CreatedByUserId { get; set; }
     }
 }

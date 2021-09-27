@@ -30,19 +30,13 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> AddAsync(OperationClaimAddDto operationClaimAddDto)
         {
             ValidationTool.Validate(new OperationClaimAddDtoValidator(), operationClaimAddDto);
-            
+
             var anyNameResult = await DbContext.OperationClaims.AnyAsync(r => r.Name == operationClaimAddDto.Name);
             if (anyNameResult)
-            {
-                //return new DataResult(ResultStatus.Warning, Messages.General.ValidationError(),
-                //    new Error("Böyle bir rol mevcut", "Exists"));
-                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir rol mevcut","Exist"));
-
-            }
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir rol mevcut", "Exist"));
 
             var operationClaim = Mapper.Map<OperationClaim>(operationClaimAddDto);
             operationClaim.CreatedDate = DateTime.Now;
-            operationClaim.ModifiedDate = DateTime.Now;
             await DbContext.OperationClaims.AddAsync(operationClaim);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success,
@@ -56,21 +50,15 @@ namespace CmnSoftwareBackend.Services.Concrete
         {
             var operationClaim = await DbContext.OperationClaims.SingleOrDefaultAsync(o => o.Id == operationClaimId);
             if (operationClaim == null)
-            {
-               // return new DataResult(ResultStatus.Warning, Messages.General.ValidationError(),
-                 //       new Error("Böyle bir rol bulunamadı","NotFound"));
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Not Found", "operationClaimId"));
-            }
+
             operationClaim.ModifiedDate = DateTime.Now;
             operationClaim.IsActive = false;
             operationClaim.IsDeleted = true;
-            DbContext.OperationClaims.Update(operationClaim);
+            //DbContext.OperationClaims.Update(operationClaim);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success,
-                $"{operationClaim.Name} adlı rol silinmiştir", new OperationClaimDto()
-                {
-                    OperationClaim = operationClaim
-                });
+                $"{operationClaim.Name} adlı rol silinmiştir", operationClaim);
         }
 
         public async Task<IDataResult> GetAllAsync(bool isActive = true, bool isDeleted = false, bool isAscending = false)
@@ -85,34 +73,30 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, new OperationClaimListDto
             {
                 OperationClaims = sortedOperationClaims,
-                TotalCount=operationClaims.Count,
+                TotalCount = operationClaims.Count,
             });
 
         }
 
         public async Task<IDataResult> GetByIdAsync(int operationClaimId)
         {
-            var operationClaim = await DbContext.OperationClaims.AsNoTracking().SingleOrDefaultAsync(oc => oc.Id == operationClaimId);
-            if (operationClaim != null)
-            {
-                return new DataResult(ResultStatus.Success, new OperationClaimDto
-                {
-                    OperationClaim = operationClaim
-                });
-            }
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bulunamadı", "operationClaimId"));
+            IQueryable<OperationClaim> query = DbContext.Set<OperationClaim>();
+            var operationClaim = await query.AsNoTracking().SingleOrDefaultAsync(oc => oc.Id == operationClaimId);
+            if (operationClaim == null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bulunamadı", "operationClaimId"));
+
+            return new DataResult(ResultStatus.Success, operationClaim);
         }
 
         public async Task<IResult> HardDeleteAsync(int operationClaimId)
         {
             var operationClaim = await DbContext.OperationClaims.SingleOrDefaultAsync(o => o.Id == operationClaimId);
-            if (operationClaim != null)
-            {
-                DbContext.OperationClaims.Remove(operationClaim);
-                await DbContext.SaveChangesAsync();
-                return new Result(ResultStatus.Success, $"{operationClaim.Name} adlı rol kalıcı olarak silinmiştir.");
-            }
-            throw new NotFoundArgumentException("Validasyon hatası", new Error("Bulunamadı", "operationClaimId"));
+            if (operationClaim == null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bulunamadı", "operationClaimId"));
+
+            DbContext.OperationClaims.Remove(operationClaim);
+            await DbContext.SaveChangesAsync();
+            return new Result(ResultStatus.Success, $"{operationClaim.Name} adlı rol kalıcı olarak silinmiştir.");
         }
 
         public async Task<IDataResult> UpdateAsync(OperationClaimUpdateDto operationClaimUpdateDto)
@@ -121,22 +105,16 @@ namespace CmnSoftwareBackend.Services.Concrete
 
             var oldOperationClaim =
                 await DbContext.OperationClaims.SingleOrDefaultAsync(o => o.Id == operationClaimUpdateDto.Id);
-            //yer değiştirdim ifleri eğer sorun olursa alttaki if ve altındaki kod parçacığını değiştir. Ve if sorgusunu != olarak değiştir.
             if (oldOperationClaim == null)
-            {
-              //return new DataResult(ResultStatus.Warning,Messages.General.ValidationError(),new Error("Bulunamadı", "Id"));
-                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bulunamadı", "Id"));   
-            }
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bulunamadı", "Id"));
+
             var newOperationClaim =
                 Mapper.Map<OperationClaimUpdateDto, OperationClaim>(operationClaimUpdateDto, oldOperationClaim);
             newOperationClaim.ModifiedDate = DateTime.Now;
             DbContext.OperationClaims.Update(newOperationClaim);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success,
-                $"{newOperationClaim.Name} adlı rol eklenmiştir", new OperationClaimDto()
-                {
-                    OperationClaim = newOperationClaim
-                });
+                $"{newOperationClaim.Name} adlı rol eklenmiştir", newOperationClaim);
 
         }
     }

@@ -32,6 +32,7 @@ namespace CmnSoftwareBackend.Services.Concrete
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale başlığı daha önceden kullanılmış biraz özgün olabilirsin :)", "Title"));
 
             var article = Mapper.Map<Article>(articleAddDto);
+            article.CreatedByUserId = article.UserId;
             DbContext.Articles.Add(article);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{articleAddDto.UserName} tarafından eklendi", articleAddDto);
@@ -52,7 +53,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla silinmiştir", article);
         }
-        
+
         public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture)
         {
             IQueryable<Article> query = DbContext.Set<Article>();
@@ -113,6 +114,7 @@ namespace CmnSoftwareBackend.Services.Concrete
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunmamakta", "Id"));
 
             var newArticle = Mapper.Map<ArticleUpdateDto, Article>(articleUpdateDto, oldArticle);
+            newArticle.ModifiedDate = DateTime.Now;
             DbContext.Articles.Update(newArticle);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, "Başarıyla güncelleştirildi", articleUpdateDto);

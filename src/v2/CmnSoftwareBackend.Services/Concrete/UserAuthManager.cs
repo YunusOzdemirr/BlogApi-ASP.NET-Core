@@ -79,8 +79,8 @@ namespace CmnSoftwareBackend.Services.Concrete
                        });
                 }
                 throw new NotFoundArgumentException(Messages.General.ValidationError(),
-                    new Error ($"{userEmailActivateDto.ActivationCode} numaralı aktivasyon kodu doğru değildir.","ActivationCode"));
-               
+                    new Error($"{userEmailActivateDto.ActivationCode} numaralı aktivasyon kodu doğru değildir.", "ActivationCode"));
+
             }
             throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error($"{userEmailActivateDto.EmailAddress} e-posta adresine ait bir kullanıcı bulunamadı",
                 "EmailAddress"));
@@ -96,9 +96,8 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> ForgotPasswordAsync(string emailAddress)
         {
             if (string.IsNullOrWhiteSpace(emailAddress))
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Mail adresi geçerli değil", "emailAddress"));
-            }
+
             var user = await DbContext.Users.FirstOrDefaultAsync(u => u.EmailAddress == emailAddress);
             if (user != null)
             {
@@ -125,7 +124,7 @@ namespace CmnSoftwareBackend.Services.Concrete
                 return new DataResult(ResultStatus.Success,
                     $"{user.EmailAddress} e-posta adresine yeni şifreniz gönderilmiştir.", Mapper.Map<UserDto>(user));
             }
-            throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Böyle bir mail adresi bulunumamakta","emailAddress"));
+            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir mail adresi bulunumamakta", "emailAddress"));
         }
 
         public IEnumerable<OperationClaim> GetClaims(User user)
@@ -140,26 +139,21 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> LoginAsync(UserLoginDto userLoginDto)
         {
-           ValidationTool.Validate(new UserLoginDtoValidator(), userLoginDto);
-            
+            ValidationTool.Validate(new UserLoginDtoValidator(), userLoginDto);
+
             var user = await DbContext.Users.AsNoTracking().SingleOrDefaultAsync(u => u.EmailAddress == userLoginDto.EmailAddress);
             if (user == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(),
                     new Error("Lütfen E-Posta adresinizi veya Şifrenizi kontrol ediniz", "EmailAddress & Password"));
-            }
             if (HashingHelper.VerifyPasswordHash(userLoginDto.Password, user.PasswordHash, user.PasswordSalt))
             {
                 if (!user.IsActive)
-                {
                     throw new NotFoundArgumentException(Messages.General.ValidationError(),
-                        new Error("Giriş  yapabilmek için hesabınızın aktif olması gereklidir","IsActive"));
-                }
+                        new Error("Giriş  yapabilmek için hesabınızın aktif olması gereklidir", "IsActive"));
                 if (!user.IsEmailAddressVerified)
-                {
                     throw new NotFoundArgumentException(Messages.General.ValidationError(),
                         new Error("Giriş yapabilmeniz için e-posta adresinizi doğrulamanız gerekiyor.", "IsEmailAddressVerified"));
-                }
+
                 var accessToken = CreateAccessToken(user);
                 UserToken userToken = new UserToken
                 {
@@ -208,17 +202,12 @@ namespace CmnSoftwareBackend.Services.Concrete
             var oldUserToken = await DbContext.UserTokens.FirstOrDefaultAsync(u =>
               u.Token == userRefreshTokenDto.AccessToken);
             if (oldUserToken == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("RefreshToken eksik veya hatalı.", "RefreshToken"));
-            }
             if (!string.Equals(userRefreshTokenDto.RefreshToken, oldUserToken.RefreshToken))
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("RefreshToken süresi doldu.", "RefreshToken"));
-            }
             if (DateTime.Now > oldUserToken.RefreshTokenExpiration)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("RefreshToken eksik veya hatalı.", "RefreshTokenExpiration"));
-            }
+
             var user = await DbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == oldUserToken.UserId);
             var userOperationClaims = await DbContext.OperationClaims
                 .Where(oc => oc.UserOperationClaims.Any(uoc => uoc.UserId == user.Id)).ToListAsync();
@@ -256,15 +245,12 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> RegisterAsync(UserRegisterDto userRegisterDto)
         {
             ValidationTool.Validate(new UserRegisterDtoValidator(), userRegisterDto);
-            
+
             if (await DbContext.Users.AnyAsync(u => u.EmailAddress == userRegisterDto.EmailAddress))
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu e-posta adresine kayıtlı bir kullanıcı mevcut.", "EmailAddress"));
-            }
             if (await DbContext.Users.AnyAsync(u => u.UserName == userRegisterDto.UserName))
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Kullanıcı adı mevcut", "UserName"));
-            }
+
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(userRegisterDto.Password, out passwordHash, out passwordSalt);
             var user = Mapper.Map<User>(userRegisterDto);
@@ -315,11 +301,10 @@ namespace CmnSoftwareBackend.Services.Concrete
                 await DbContext.UserOperationClaims.AddAsync(userOperationClaim);
                 await DbContext.UserTokens.AddAsync(userToken);
                 if (userPicture is not null)
-                {
                     await DbContext.UserPictures.AddAsync(userPicture);
-                }
+
                 await DbContext.SaveChangesAsync();
-                transactionScope.Complete();                  
+                transactionScope.Complete();
             };
             _mailService.SendEmaiL(new EmailSendDto
             {
@@ -338,22 +323,21 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> ReSendActivationCodeAsync(string emailAddress)
         {
             var user = await DbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.EmailAddress == emailAddress);
-            if (user != null)
+            if (user == null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir mail adresi bulunmamakta.", "emailAddress"));
+
+            user.VerificationCode = VerificationCodeGenerator.Generate();
+            user.ModifiedDate = DateTime.Now;
+            DbContext.Update(user);
+            await DbContext.SaveChangesAsync();
+            _mailService.SendEmaiL(new EmailSendDto
             {
-                user.VerificationCode = VerificationCodeGenerator.Generate();
-                user.ModifiedDate = DateTime.Now;
-                DbContext.Update(user);
-                await DbContext.SaveChangesAsync();
-                _mailService.SendEmaiL(new EmailSendDto
-                {
-                    EmailAdress = user.EmailAddress,
-                    Subject = "Aktivasyon Kodu",
-                    Content = $"<h5>Aktivasyon kodu: {user.VerificationCode}</h5>"
-                });
-                return new DataResult(ResultStatus.Success,
-                    "mail adresinize tekrar doğrulama kodu gönderilmiştir", Mapper.Map<UserDto>(user));
-            }
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir mail adresi bulunmamakta.", "emailAddress"));
+                EmailAdress = user.EmailAddress,
+                Subject = "Aktivasyon Kodu",
+                Content = $"<h5>Aktivasyon kodu: {user.VerificationCode}</h5>"
+            });
+            return new DataResult(ResultStatus.Success,
+                "mail adresinize tekrar doğrulama kodu gönderilmiştir", Mapper.Map<UserDto>(user));
         }
     }
 }

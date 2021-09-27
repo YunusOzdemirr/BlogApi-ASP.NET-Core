@@ -27,32 +27,29 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> ChangePasswordAsync(UserChangePasswordDto userChangePasswordDto)
         {
             var user = await DbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userChangePasswordDto.Id);
-            if (user != null)
-            {
-                if (HashingHelper.VerifyPasswordHash(userChangePasswordDto.Password, user.PasswordHash, user.PasswordSalt))
-                {
-                    byte[] passwordHash, passwordSalt;
-                    HashingHelper.CreatePasswordHash(userChangePasswordDto.NewPassword, out passwordHash, out passwordSalt);
-                    user.PasswordHash = passwordHash;
-                    user.PasswordSalt = passwordSalt;
-                    user.ModifiedDate = DateTime.Now;
-                    // DbContext.Users.Update(user);
-                    await DbContext.SaveChangesAsync();
-                    var userDto = Mapper.Map<UserDto>(user);
-                    return new DataResult(ResultStatus.Success, Messages.General.ValidationError(), userDto);
-                }
-                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Şifreler eşleşmiyor.", "Password"));
-            }
+            if (user == null)
             throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı  yok.", "Id"));
+
+            if (!HashingHelper.VerifyPasswordHash(userChangePasswordDto.Password, user.PasswordHash, user.PasswordSalt))
+            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Şifreler eşleşmiyor.", "Password"));
+
+            byte[] passwordHash, passwordSalt;
+            HashingHelper.CreatePasswordHash(userChangePasswordDto.NewPassword, out passwordHash, out passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            user.ModifiedDate = DateTime.Now;
+            // DbContext.Users.Update(user);
+            await DbContext.SaveChangesAsync();
+            var userDto = Mapper.Map<UserDto>(user);
+            return new DataResult(ResultStatus.Success, Messages.General.ValidationError(), userDto);
         }
 
         public async Task<IResult> DeleteAsync(Guid userId, Guid modifiedByUserId)
         {
             var user = await DbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı yok.", "Id"));
-            }
+
             user.ModifiedDate = DateTime.Now;
             user.IsActive = false;
             user.IsDeleted = true;
