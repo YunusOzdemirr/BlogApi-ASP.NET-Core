@@ -80,7 +80,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             }
             return new DataResult(ResultStatus.Success, new ArticlePictureListDto
             {
-                ArticlePictures = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(ap => Mapper.Map<ArticlePictureDto>(ap)).ToListAsync(),
+                ArticlePictures = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(ap => Mapper.Map<ArticlePicture>(ap)).ToListAsync(),
                 TotalCount = articlePicturesCount,
                 CurrentPage = currentPage,
                 IsAscending = isAscending,
@@ -111,7 +111,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             }
             return new DataResult(ResultStatus.Success, new ArticlePictureListDto
             {
-                ArticlePictures = await query.Select(ap => Mapper.Map<ArticlePictureDto>(ap)).ToListAsync(),
+                ArticlePictures = await query.Select(ap => Mapper.Map<ArticlePicture>(ap)).ToListAsync(),
                 TotalCount = articlePictureCount,
                 IsAscending = isAscending
             });
