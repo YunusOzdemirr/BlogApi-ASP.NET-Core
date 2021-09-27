@@ -31,13 +31,10 @@ namespace CmnSoftwareBackend.Services.Concrete
             //is a real article
             var article = await DbContext.Articles.SingleOrDefaultAsync(a => a.Id == articlePictureAddDto.ArticleId);
             if (article == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale mevcut değil", "ArticleId"));
-            }
             if (articlePictureCount == 3)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makaleye daha fazla resim koyamazsınız.", "ArticleCount"));
-            }
+
             //mapping
             var articlePicture = Mapper.Map<ArticlePicture>(articlePictureAddDto);
             articlePicture.CreatedByUserId = article.UserId;
@@ -51,17 +48,14 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> DeleteAsync(int articlePictureId, Guid CreatedByUserId)
         {
             var articlePicture = await DbContext.ArticlePictures.Include(a => a.Article).SingleOrDefaultAsync(ac => ac.Id == articlePictureId);
-            //gerek olmayan kod
-            //var article = DbContext.Articles.SingleOrDefault(a => a.Id == articlePicture.ArticleId);
-            if (articlePicture != null && articlePicture.Article.CreatedByUserId == articlePicture.CreatedByUserId && articlePicture.Article != null)
-            {
-                articlePicture.IsActive = false;
-                articlePicture.IsDeleted = true;
-                articlePicture.ModifiedDate = DateTime.Now;
-                await DbContext.SaveChangesAsync();
-                return new DataResult(ResultStatus.Success, "Bu resim başarıyla silindi", articlePicture);
-            }
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale resmi bulunamadı", "articlePictureId"));
+            if (articlePicture == null && articlePicture.Article.CreatedByUserId != articlePicture.CreatedByUserId && articlePicture.Article == null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale resmi bulunamadı", "articlePictureId"));
+
+            articlePicture.IsActive = false;
+            articlePicture.IsDeleted = true;
+            articlePicture.ModifiedDate = DateTime.Now;
+            await DbContext.SaveChangesAsync();
+            return new DataResult(ResultStatus.Success, "Bu resim başarıyla silindi", articlePicture);
         }
 
         public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticle)
@@ -130,9 +124,9 @@ namespace CmnSoftwareBackend.Services.Concrete
             IQueryable<ArticlePicture> query = DbContext.Set<ArticlePicture>();
             var articlePicture = await query.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articlePictureId);
             if (articlePicture == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı", "Id"));
-            }
+
+
             if (includeArticle) query = query.Include(a => a.Article);
 
             return new DataResult(ResultStatus.Success, query);
@@ -141,28 +135,27 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IResult> HardDeleteAsync(int articlePictureId)
         {
             var articlePicture = await DbContext.ArticlePictures.SingleOrDefaultAsync(a => a.Id == articlePictureId);
-            if (articlePicture != null)
-            {
-                DbContext.ArticlePictures.Remove(articlePicture);
-                await DbContext.SaveChangesAsync();
-                return new DataResult(ResultStatus.Success, "Resim başarıyla silindi", articlePicture);
-            }
+            if (articlePicture == null)
             throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale resmi bulunamadı", "Id"));
+
+
+            DbContext.ArticlePictures.Remove(articlePicture);
+            await DbContext.SaveChangesAsync();
+            return new DataResult(ResultStatus.Success, "Resim başarıyla silindi", articlePicture);
         }
         //Changes for check the branch
         public async Task<IDataResult> UpdateAsync(ArticlePictureUpdateDto articlePictureUpdateDto)
         {
             var oldArticlePicture = await DbContext.ArticlePictures.Include(ap => ap.Article).SingleOrDefaultAsync(ap => ap.Id == articlePictureUpdateDto.Id);
 
-            if (oldArticlePicture != null && oldArticlePicture.Article.CreatedByUserId == oldArticlePicture.CreatedByUserId && oldArticlePicture.Article != null)
-            {
-                var newArticlePicture = Mapper.Map<ArticlePictureUpdateDto, ArticlePicture>(articlePictureUpdateDto);
-                newArticlePicture.ModifiedDate = DateTime.Now;
-                DbContext.ArticlePictures.Update(newArticlePicture);
-                await DbContext.SaveChangesAsync();
-                return new DataResult(ResultStatus.Success, "");
-            }
+            if (oldArticlePicture == null && oldArticlePicture.Article.CreatedByUserId != oldArticlePicture.CreatedByUserId && oldArticlePicture.Article == null)
             throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı", "InvalidUser"));
+
+            var newArticlePicture = Mapper.Map<ArticlePictureUpdateDto, ArticlePicture>(articlePictureUpdateDto);
+            newArticlePicture.ModifiedDate = DateTime.Now;
+            DbContext.ArticlePictures.Update(newArticlePicture);
+            await DbContext.SaveChangesAsync();
+            return new DataResult(ResultStatus.Success, "");
 
         }
     }
