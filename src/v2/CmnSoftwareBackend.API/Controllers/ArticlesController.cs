@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CmnSoftwareBackend.API.Controllers
 {
     [Route("api/[controller]")]
+    [ApiController]
     public class ArticlesController : Controller
     {
         private readonly IArticleService _articleService;
@@ -26,6 +27,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
+        [Route("[action]")]
         public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture)
         {
             var result = await _articleService.GetAllAsync(isActive, isDeleted, isAscending, currentPage, pageSize, orderBy, includeArticlePicture);
@@ -35,6 +37,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
+        [Route("[action]")]
         public async Task<IActionResult> GetById(int articleId, bool includeArticlePicture)
         {
             var result = await _articleService.GetByIdAsync(articleId, includeArticlePicture);
@@ -44,10 +47,41 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
+        [Route("[action]")]
         public async Task<IActionResult> AddAsync(ArticleAddDto articleAddDto)
         {
             var result = await _articleService.AddAsync(articleAddDto);
-            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "GetById" })));
+            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "Add" })));
+        }
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        [Route("[action]")]
+        public async Task<IActionResult> DeleteAsync(ArticleAddDto articleAddDto)
+        {
+            var result = await _articleService.AddAsync(articleAddDto);
+            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "Delete" })));
+        }
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        [Route("[action]")]
+        public async Task<IActionResult> UpdateAsync(ArticleAddDto articleAddDto)
+        {
+            var result = await _articleService.AddAsync(articleAddDto);
+            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "Update" })));
+        }
+        [HttpPost]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(500)]
+        [Route("[action]")]
+        public async Task<IActionResult> HardDeleteAsync(ArticleAddDto articleAddDto)
+        {
+            var result = await _articleService.AddAsync(articleAddDto);
+            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "HardDelete" })));
         }
 
     }

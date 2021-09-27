@@ -16,7 +16,10 @@ namespace CmnSoftwareBackend.Services.Extensions
             serviceCollection.AddScoped<ICategoryService, CategoryManager>();
             serviceCollection.AddScoped<IOperationClaimService, OperationClaimManager>();
             serviceCollection.AddScoped<IUserOperationClaimService, UserOperationClaimManager>();
-            //serviceCollection.AddScoped<IUserService, UserManager>();
+            serviceCollection.AddScoped<IArticleService, ArticleManager>();
+            serviceCollection.AddScoped<IArticlePictureService, ArticlePictureManager>();
+            serviceCollection.AddScoped<ICommentWithoutUserService, CommentWithoutUserManager>();
+            serviceCollection.AddScoped<IUserService, UserManager>();
             serviceCollection.AddScoped<IUserAuthService, UserAuthManager>();
             serviceCollection.AddScoped<IMailService, MailManager>();
 

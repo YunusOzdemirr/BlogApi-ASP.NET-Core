@@ -50,7 +50,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success,"Başarıyla bu yorum silindi",comment);
         }
 
-        public Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy)
+        public Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy,bool includeArticle)
         {
             throw new NotImplementedException();
         }

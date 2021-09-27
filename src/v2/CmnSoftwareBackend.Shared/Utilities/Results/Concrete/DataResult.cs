@@ -11,7 +11,7 @@ namespace CmnSoftwareBackend.Shared.Utilities.Results.Concrete
         public DataResult(ResultStatus resultStatus, Object data)
         {
             ResultStatus = resultStatus;
-            Data = Data;
+            Data = data;
         }
         public DataResult(ResultStatus resultStatus, string message, Object data)
         {

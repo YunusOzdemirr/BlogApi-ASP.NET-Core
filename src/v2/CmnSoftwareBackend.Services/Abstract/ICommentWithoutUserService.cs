@@ -12,7 +12,7 @@ namespace CmnSoftwareBackend.Services.Abstract
         Task<IDataResult> GetByIdAsync(int commentWithoutUserId,bool includeArticle);
         Task<IDataResult> AddAsync(CommentWithoutUserAddDto commentWithoutUserAddDto);
         Task<IDataResult> UpdateAsync(CommentWithoutUserUpdateDto commentWithoutUserUpdateDto);
-        Task<IDataResult> DeleteAsync(int commentWithoutUserId,bool includeArticle);
+        Task<IDataResult> DeleteAsync(int commentWithoutUserId);
         Task<IResult> HardDeleteAsync(int commentWithoutUserId);
     }
 }

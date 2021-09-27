@@ -127,6 +127,7 @@ namespace CmnSoftwareBackend.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Content = table.Column<string>(type: "nvarchar(3000)", maxLength: 3000, nullable: false),
                     ViewCount = table.Column<int>(type: "int", nullable: false),
@@ -376,12 +377,12 @@ namespace CmnSoftwareBackend.Data.Migrations
             migrationBuilder.InsertData(
                 table: "OperationClaims",
                 columns: new[] { "Id", "CreatedByUserId", "CreatedDate", "IsActive", "IsDeleted", "ModifiedByUserId", "ModifiedDate", "Name" },
-                values: new object[] { 1, null, new DateTime(2021, 9, 25, 18, 24, 7, 144, DateTimeKind.Local).AddTicks(9140), true, false, null, null, "Admin" });
+                values: new object[] { 1, null, new DateTime(2021, 9, 27, 8, 17, 36, 167, DateTimeKind.Local).AddTicks(4810), true, false, null, null, "Admin" });
 
             migrationBuilder.InsertData(
                 table: "OperationClaims",
                 columns: new[] { "Id", "CreatedByUserId", "CreatedDate", "IsActive", "IsDeleted", "ModifiedByUserId", "ModifiedDate", "Name" },
-                values: new object[] { 2, null, new DateTime(2021, 9, 25, 18, 24, 7, 150, DateTimeKind.Local).AddTicks(6600), true, false, null, null, "NormalUser" });
+                values: new object[] { 2, null, new DateTime(2021, 9, 27, 8, 17, 36, 173, DateTimeKind.Local).AddTicks(2530), true, false, null, null, "NormalUser" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ArticlePictures_ArticleId",

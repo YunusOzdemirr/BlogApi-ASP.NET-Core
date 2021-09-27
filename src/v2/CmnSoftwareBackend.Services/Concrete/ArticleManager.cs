@@ -30,6 +30,11 @@ namespace CmnSoftwareBackend.Services.Concrete
             {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale başlığı daha önceden kullanılmış biraz özgün olabilirsin :)", "Title"));
             }
+            var user = DbContext.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == articleAddDto.UserId);
+            if (user==null)
+            {
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı bulunamadı","UserId"));
+            }
             DbContext.Articles.Add(article);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{articleAddDto.UserName} tarafından eklendi", article);
@@ -95,7 +100,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             }
             if (includeArticlePicture) query = query.AsNoTracking().Include(a => a.ArticlePictures);
 
-            return new DataResult(ResultStatus.Success, query);
+            return new DataResult(ResultStatus.Success, article);
         }
 
         public async Task<IResult> HardDeleteAsync(int articleId)
@@ -122,6 +127,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, "Başarıyla güncelleştirildi", newArticle);
         }
+
     }
 }
 

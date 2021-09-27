@@ -16,8 +16,8 @@ namespace CmnSoftwareBackend.Entities.Dtos.ArticleDtos
         public string SeoTags { get; set; }
         public sbyte StarAverage { get; set; }
         public int TotalStarCount { get; set; }
-        public static Guid UserId { get; set; }
-        public int ArticlePictureId { get; set; }
+        public Guid UserId { get; set; }
+        public int? ArticlePictureId { get; set; }
         public Guid CreatedByUserId { get; set; }
     }
 }

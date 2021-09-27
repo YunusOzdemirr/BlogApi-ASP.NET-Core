@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CmnSoftwareBackend.Data.Migrations
 {
     [DbContext(typeof(CmnDbContext))]
-    [Migration("20210925152407_InitialCreate")]
+    [Migration("20210927051736_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -76,6 +76,9 @@ namespace CmnSoftwareBackend.Data.Migrations
 
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ViewCount")
                         .HasColumnType("int");
@@ -365,7 +368,7 @@ namespace CmnSoftwareBackend.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2021, 9, 25, 18, 24, 7, 144, DateTimeKind.Local).AddTicks(9140),
+                            CreatedDate = new DateTime(2021, 9, 27, 8, 17, 36, 167, DateTimeKind.Local).AddTicks(4810),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Admin"
@@ -373,7 +376,7 @@ namespace CmnSoftwareBackend.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2021, 9, 25, 18, 24, 7, 150, DateTimeKind.Local).AddTicks(6600),
+                            CreatedDate = new DateTime(2021, 9, 27, 8, 17, 36, 173, DateTimeKind.Local).AddTicks(2530),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "NormalUser"
