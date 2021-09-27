@@ -5,7 +5,15 @@ using CmnSoftwareBackend.Data.Concrete.EntityFramework.Contexts;
 using CmnSoftwareBackend.Entities.ComplexTypes;
 using CmnSoftwareBackend.Entities.Dtos.CommentWithoutUserDtos;
 using CmnSoftwareBackend.Services.Abstract;
+using CmnSoftwareBackend.Services.Utilities;
+using CmnSoftwareBackend.Shared.Entities.Concrete;
+using CmnSoftwareBackend.Shared.Utilities.Exceptions;
 using CmnSoftwareBackend.Shared.Utilities.Results.Abstract;
+using Microsoft.EntityFrameworkCore;
+using CmnSoftwareBackend.Entities.Concrete;
+using CmnSoftwareBackend.Shared.Utilities.Results.Concrete;
+using CmnSoftwareBackend.Shared.Utilities.Results.ComplexTypes;
+using System.Linq;
 
 namespace CmnSoftwareBackend.Services.Concrete
 {
@@ -15,14 +23,31 @@ namespace CmnSoftwareBackend.Services.Concrete
         {
         }
 
-        public Task<IDataResult> AddAsync(CommentWithoutUserAddDto commentWithoutUserAddDto)
+        public async Task<IDataResult> AddAsync(CommentWithoutUserAddDto commentWithoutUserAddDto)
         {
-            throw new NotImplementedException();
+            var article =await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(cwy => cwy.Id == commentWithoutUserAddDto.ArticleId);
+            if (article==null)
+            {
+                throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Böyle bir makale bulunamadı","ArticleId"));
+            }
+            var comment = Mapper.Map<CommentWithoutUser>(commentWithoutUserAddDto);
+            await DbContext.CommentWithoutUsers.AddAsync(comment);
+            await DbContext.SaveChangesAsync();
+            return new DataResult(ResultStatus.Success, comment);
         }
 
-        public Task<IDataResult> DeleteAsync(int commentWithoutUserId)
+        public async Task<IDataResult> DeleteAsync(int commentWithoutUserId)
         {
-            throw new NotImplementedException();
+            var comment =await DbContext.CommentWithoutUsers.Include(a=>a.Article).AsNoTracking().SingleOrDefaultAsync(cwu => cwu.Id == commentWithoutUserId);
+            if (comment==null && comment.Article==null)
+            {
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir comment bulunamadı", "Id"));
+            }
+            comment.IsActive = false;
+            comment.IsDeleted = true;
+            comment.ModifiedDate = DateTime.Now;
+            await DbContext.SaveChangesAsync();
+            return new DataResult(ResultStatus.Success,"Başarıyla bu yorum silindi",comment);
         }
 
         public Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy)
@@ -30,14 +55,28 @@ namespace CmnSoftwareBackend.Services.Concrete
             throw new NotImplementedException();
         }
 
-        public Task<IDataResult> GetByIdAsync(int commentWithoutUserId)
+        public async Task<IDataResult> GetByIdAsync(int commentWithoutUserId,bool includeArticle)
         {
-            throw new NotImplementedException();
+            IQueryable<CommentWithoutUser> query = DbContext.Set<CommentWithoutUser>();
+            var comment = await query.AsNoTracking().SingleOrDefaultAsync(a => a.Id == commentWithoutUserId);
+            if (comment==null)
+            {
+                throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Böyle bir yorum bulunamadı","Id"));
+            }
+            if (includeArticle) query = query.AsNoTracking().Include(a => a.Article);
+            return new DataResult(ResultStatus.Success,comment);
         }
 
-        public Task<IResult> HardDeleteAsync(int commentWithoutUserId)
+        public async Task<IResult> HardDeleteAsync(int commentWithoutUserId)
         {
-            throw new NotImplementedException();
+            var comment =await DbContext.CommentWithoutUsers.SingleOrDefaultAsync(cwu => cwu.Id == commentWithoutUserId);
+            if (comment==null)
+            {
+                throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Böyle bir yorum bulunamadı","Id"));
+            }
+            DbContext.CommentWithoutUsers.Remove(comment);
+            await DbContext.SaveChangesAsync();
+            return new DataResult(ResultStatus.Success,"Bu yorum kalıcı olarak silindi",comment);
         }
 
         public Task<IDataResult> UpdateAsync(CommentWithoutUserUpdateDto commentWithoutUserUpdateDto)
