@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CmnSoftwareBackend.Data.Concrete.EntityFramework.Contexts;
@@ -47,7 +48,34 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture)
         {
-            throw new NotImplementedException();
+            IQueryable<Article> query = DbContext.Set<Article>();
+            if (isActive.HasValue) query = query.AsNoTracking().Where(a => a.IsActive == isActive);
+            if (isDeleted.HasValue) query = query.AsNoTracking().Where(a => a.IsDeleted == isDeleted);
+            if (includeArticlePicture) query = query.AsNoTracking().Include(a => a.ArticlePictures);
+            pageSize = pageSize > 100 ? 100 : pageSize;
+            var articleCount = await query.AsNoTracking().CountAsync();
+            switch (orderBy)
+            {
+                case OrderBy.Id:
+                    query = isAscending ? query.OrderBy(a => a.Id) : query.OrderByDescending(a => a.Id);
+                    break;
+                case OrderBy.Az:
+                    query = isAscending ? query.OrderBy(a => a.Title) : query.OrderByDescending(a => a.Title);
+                    break;
+                default:
+                    query = isAscending ? query.OrderBy(a => a.CreatedDate) : query.OrderByDescending(a => a.CreatedDate);
+                    break;
+            }
+            // await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(ap => Mapper.Map<ArticlePictureDto>(ap)).ToListAsync(),
+            return new DataResult(ResultStatus.Success, new ArticleListDto
+            {
+                Articles = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(a => Mapper.Map<Article>(a)).ToListAsync(),
+                CurrentPage=currentPage,
+                TotalCount=articleCount,
+                PageSize=pageSize,
+                IsAscending=isAscending
+
+            }) ;
         }
 
         public async Task<IDataResult> GetByIdAsync(int articleId, bool includeArticlePicture)
