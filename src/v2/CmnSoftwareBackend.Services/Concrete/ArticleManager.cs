@@ -26,6 +26,15 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> AddAsync(ArticleAddDto articleAddDto)
         {
             var article = Mapper.Map<Article>(articleAddDto);
+            if (await DbContext.Articles.AsNoTracking().AnyAsync(a => a.Title == article.Title))
+            {
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale başlığı daha önceden kullanılmış biraz özgün olabilirsin :)", "Title"));
+            }
+            var user = DbContext.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == articleAddDto.UserId);
+            if (user==null)
+            {
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı bulunamadı","UserId"));
+            }
             DbContext.Articles.Add(article);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{articleAddDto.UserName} tarafından eklendi", article);
@@ -38,10 +47,14 @@ namespace CmnSoftwareBackend.Services.Concrete
             {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir article mevcut değil", "Id"));
             }
+            if (article.CreatedByUserId != CreatedByUserId)
+            {
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale size ait değil.", "InvalidUser"));
+            }
             article.IsDeleted = true;
             article.IsActive = false;
             article.ModifiedDate = DateTime.Now;
-            DbContext.Articles.Update(article);
+            //DbContext.Articles.Update(article);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla silinmiştir", article);
         }
@@ -70,21 +83,23 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, new ArticleListDto
             {
                 Articles = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(a => Mapper.Map<Article>(a)).ToListAsync(),
-                CurrentPage=currentPage,
-                TotalCount=articleCount,
-                PageSize=pageSize,
-                IsAscending=isAscending
-
-            }) ;
+                CurrentPage = currentPage,
+                TotalCount = articleCount,
+                PageSize = pageSize,
+                IsAscending = isAscending
+            });
         }
 
         public async Task<IDataResult> GetByIdAsync(int articleId, bool includeArticlePicture)
         {
-            var article = await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articleId);
+            IQueryable<Article> query = DbContext.Set<Article>();
+            var article = await query.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articleId);
             if (article == null)
             {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı", "Id"));
             }
+            if (includeArticlePicture) query = query.AsNoTracking().Include(a => a.ArticlePictures);
+
             return new DataResult(ResultStatus.Success, article);
         }
 
@@ -97,7 +112,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             }
             DbContext.Articles.Remove(article);
             await DbContext.SaveChangesAsync();
-            return new Result($"{article.Title} başlıklı makale başarıyla kalıcı olarak silindi");
+            return new Result($"{article.Title} başlıklı makale kalıcı olarak silindi");
         }
 
         public async Task<IDataResult> UpdateAsync(ArticleUpdateDto articleUpdateDto)
@@ -112,6 +127,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, "Başarıyla güncelleştirildi", newArticle);
         }
+
     }
 }
 

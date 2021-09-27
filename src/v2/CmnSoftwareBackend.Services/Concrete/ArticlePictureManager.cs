@@ -149,7 +149,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             }
             throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale resmi bulunamadı", "Id"));
         }
-
+        //Changes for check the branch
         public async Task<IDataResult> UpdateAsync(ArticlePictureUpdateDto articlePictureUpdateDto)
         {
             var oldArticlePicture = await DbContext.ArticlePictures.Include(ap => ap.Article).SingleOrDefaultAsync(ap => ap.Id == articlePictureUpdateDto.Id);
