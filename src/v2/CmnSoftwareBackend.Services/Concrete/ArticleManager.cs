@@ -25,32 +25,26 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> AddAsync(ArticleAddDto articleAddDto)
         {
-            var article = Mapper.Map<Article>(articleAddDto);
-            if (await DbContext.Articles.AsNoTracking().AnyAsync(a => a.Title == article.Title))
-            {
-                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale başlığı daha önceden kullanılmış biraz özgün olabilirsin :)", "Title"));
-            }
             var user = DbContext.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == articleAddDto.UserId);
-            if (user==null)
-            {
-                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı bulunamadı","UserId"));
-            }
+            if (user == null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı bulunamadı", "UserId"));
+            if (await DbContext.Articles.AsNoTracking().AnyAsync(a => a.Title == articleAddDto.Title))
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale başlığı daha önceden kullanılmış biraz özgün olabilirsin :)", "Title"));
+
+            var article = Mapper.Map<Article>(articleAddDto);
             DbContext.Articles.Add(article);
             await DbContext.SaveChangesAsync();
-            return new DataResult(ResultStatus.Success, $"{articleAddDto.UserName} tarafından eklendi", article);
+            return new DataResult(ResultStatus.Success, $"{articleAddDto.UserName} tarafından eklendi", articleAddDto);
         }
 
         public async Task<IDataResult> DeleteAsync(int articleId, Guid CreatedByUserId)
         {
             var article = await DbContext.Articles.AsNoTracking().FirstOrDefaultAsync(a => a.Id == articleId);
             if (article == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir article mevcut değil", "Id"));
-            }
             if (article.CreatedByUserId != CreatedByUserId)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale size ait değil.", "InvalidUser"));
-            }
+
             article.IsDeleted = true;
             article.IsActive = false;
             article.ModifiedDate = DateTime.Now;
@@ -58,7 +52,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla silinmiştir", article);
         }
-
+        
         public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture)
         {
             IQueryable<Article> query = DbContext.Set<Article>();
@@ -95,9 +89,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             IQueryable<Article> query = DbContext.Set<Article>();
             var article = await query.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articleId);
             if (article == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı", "Id"));
-            }
             if (includeArticlePicture) query = query.AsNoTracking().Include(a => a.ArticlePictures);
 
             return new DataResult(ResultStatus.Success, article);
@@ -107,9 +99,8 @@ namespace CmnSoftwareBackend.Services.Concrete
         {
             var article = await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articleId);
             if (article == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı.", "Id"));
-            }
+
             DbContext.Articles.Remove(article);
             await DbContext.SaveChangesAsync();
             return new Result($"{article.Title} başlıklı makale kalıcı olarak silindi");
@@ -119,13 +110,12 @@ namespace CmnSoftwareBackend.Services.Concrete
         {
             var oldArticle = await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articleUpdateDto.Id);
             if (oldArticle == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunmamakta", "Id"));
-            }
+
             var newArticle = Mapper.Map<ArticleUpdateDto, Article>(articleUpdateDto, oldArticle);
             DbContext.Articles.Update(newArticle);
             await DbContext.SaveChangesAsync();
-            return new DataResult(ResultStatus.Success, "Başarıyla güncelleştirildi", newArticle);
+            return new DataResult(ResultStatus.Success, "Başarıyla güncelleştirildi", articleUpdateDto);
         }
 
     }

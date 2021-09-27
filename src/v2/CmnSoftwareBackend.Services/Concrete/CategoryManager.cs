@@ -65,9 +65,8 @@ namespace CmnSoftwareBackend.Services.Concrete
             IQueryable<Category> query = DbContext.Set<Category>();
             var category = await query.AsNoTracking().FirstOrDefaultAsync(c => c.Id == categoryId);
             if (category == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori bulunmamakta", "categoryId"));
-            }
+
             return new DataResult(ResultStatus.Success, category);
         }
 
@@ -76,10 +75,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             ValidationTool.Validate(new CategoryAddDtoValidator(), categoryAddDto);
 
             if (await DbContext.Categories.AnyAsync(c => c.Name == categoryAddDto.Name))
-            {
-                //return new DataResult(ResultStatus.Warning,"Böyle bir kategori mevcut","NameExists");
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori mevcut.", "Name"));
-            }
 
             var category = Mapper.Map<Category>(categoryAddDto);
             await DbContext.AddAsync(category);
@@ -95,9 +91,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             var oldCategory = await DbContext.Categories.AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == categoryUpdateDto.Id);
             if (oldCategory == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori bulunmamakta.", "categoryId"));
-            }
 
             var newCategory = Mapper.Map<CategoryUpdateDto, Category>(categoryUpdateDto, oldCategory);
             DbContext.Categories.Update(newCategory);
@@ -110,13 +104,11 @@ namespace CmnSoftwareBackend.Services.Concrete
         {
             var category = await DbContext.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == categoryId);
             if (category == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori bulunmamakta", "categoryId"));
-            }
 
             category.IsActive = false;
             category.IsDeleted = true;
-            DbContext.Categories.Update(category);
+            //DbContext.Categories.Update(category);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{category.Name} adlı kategori silinmiştir.",
                 category);
@@ -126,9 +118,8 @@ namespace CmnSoftwareBackend.Services.Concrete
         {
             var category = await DbContext.Categories.AsNoTracking().FirstOrDefaultAsync(c => c.Id == categoryId);
             if (category == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori bulunmamakta", "categoryId"));
-            }
+
             DbContext.Remove(category);
             await DbContext.SaveChangesAsync();
             return new Result(ResultStatus.Success,
