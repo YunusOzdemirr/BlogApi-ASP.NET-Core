@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CmnSoftwareBackend.API.Controllers
 {
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
     [Route("api/[controller]")]
     [ApiController]
     public class ArticlesController : Controller
@@ -25,8 +27,7 @@ namespace CmnSoftwareBackend.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
+
         [Route("[action]")]
         public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture)
         {
@@ -35,18 +36,31 @@ namespace CmnSoftwareBackend.API.Controllers
         }
         [HttpGet]
         [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> GetById(int articleId, bool includeArticlePicture)
         {
             var result = await _articleService.GetByIdAsync(articleId, includeArticlePicture);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "GetById" })));
         }
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [Route("[action]")]
+        public async Task<IActionResult> GetArticleByUserId(Guid userId)
+        {
+            var article = await _articleService.GetArticleByUserId(userId);
+            return Ok(new SuccessDataApiResult(article, Url.Link("", new { Controller = "Articles", Action = "GetArticleByUserId" })));
+        }
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [Route("[action]")]
+        public async Task<IActionResult> GetArticleByArticlePictureId(int ArticlePictureId)
+        {
+            var articles =await _articleService.GetArticleByArticlePictureId(ArticlePictureId);
+            return Ok(new SuccessDataApiResult(articles,Url.Link("",new {Controller="Articles",Action="GetArticleByArticlePictureId" })));
+        }
+
         [HttpPost]
         [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> AddAsync(ArticleAddDto articleAddDto)
         {

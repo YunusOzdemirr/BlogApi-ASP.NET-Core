@@ -36,6 +36,14 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        public async Task<IActionResult> GetArticlePictureByArticleId(int articleId)
+        {
+            var article = await _articlePictureService.GetArticlePictureByArticleId(articleId);
+            return Ok(new SuccessDataApiResult(article, Url.Link("", new { Controller = "ArticlePictures", Action = "GetArticlePictureByArticleId" })));
+        }
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [Route("[action]")]
         public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticle)
         {
             var getAll = await _articlePictureService.GetAllAsync(isActive, isActive, isAscending, currentPage, pageSize, orderBy, includeArticle);
