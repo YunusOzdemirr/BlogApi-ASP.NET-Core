@@ -118,6 +118,11 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         }
 
+        public Task<IDataResult> GetArticlePictureByArticleId(int articleId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IDataResult> GetByIdAsync(int articlePictureId, bool includeArticle)
         {
             IQueryable<ArticlePicture> query = DbContext.Set<ArticlePicture>();

@@ -29,7 +29,6 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy)
         {
-
             IQueryable<Category> query = DbContext.Set<Category>();
             if (isActive.HasValue) query = query.Where(c => c.IsActive == isActive.Value);
             if (isDeleted.HasValue) query = query.Where(c => c.IsDeleted == isDeleted.Value);

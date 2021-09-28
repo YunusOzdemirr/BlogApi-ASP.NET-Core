@@ -11,8 +11,6 @@ namespace CmnSoftwareBackend.Entities.Dtos.CategoryDtos
         public string Image { get; set; }
         public string Description { get; set; }
         public string Color { get; set; }
-        public int RankId { get; set; }
-        public Rank Rank { get; set; }
         public ICollection<CategoryAndArticle> CategoryAndArticles { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }

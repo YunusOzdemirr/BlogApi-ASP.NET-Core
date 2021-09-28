@@ -16,7 +16,6 @@ namespace CmnSoftwareBackend.Services.Abstract
         Task<IDataResult> LoginAsync(UserLoginDto userLoginDto);
         //Task<bool> UserExistsAsync(string emailAddress);
         AccessToken CreateAccessToken(User user);
-
         Task<IDataResult> ActiveEmailByActivationCodeAsync(UserEmailActivateDto userEmailActivateDto);
         Task<IDataResult> ReSendActivationCodeAsync(string emailAddress);
         Task<IDataResult> ForgotPasswordAsync(string emailAddress);

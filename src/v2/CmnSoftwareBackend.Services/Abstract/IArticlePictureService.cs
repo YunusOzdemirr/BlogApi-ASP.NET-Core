@@ -10,6 +10,7 @@ namespace CmnSoftwareBackend.Services.Abstract
     {
         Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy,bool includeArticle);
         Task<IDataResult> GetAllWithoutPagingAsync(bool? isActive, bool? isDeleted, OrderBy orderBy, bool isAscending,bool includeArticle);
+        Task<IDataResult> GetArticlePictureByArticleId(int articleId); 
         Task<IDataResult> GetByIdAsync(int articlePictureId,bool includeArticle);
         Task<IDataResult> AddAsync(ArticlePictureAddDto articlePictureAddDto);
         Task<IDataResult> UpdateAsync(ArticlePictureUpdateDto articlePictureUpdateDto);

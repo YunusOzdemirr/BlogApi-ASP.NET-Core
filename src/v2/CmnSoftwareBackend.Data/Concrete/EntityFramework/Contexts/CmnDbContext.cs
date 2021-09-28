@@ -19,7 +19,6 @@ namespace CmnSoftwareBackend.Data.Concrete.EntityFramework.Contexts
         public DbSet<CommentWithoutUser> CommentWithoutUsers{ get; set; }
         public DbSet<CommentWithUser> CommentWithUsers{ get; set; }
         public DbSet<ArticlePicture> ArticlePictures{ get; set; }
-        public DbSet<Rank> Ranks { get; set; }
         public DbSet<CategoryAndArticle> CategoryAndArticles { get; set; }
 
 
@@ -39,9 +38,6 @@ namespace CmnSoftwareBackend.Data.Concrete.EntityFramework.Contexts
             modelBuilder.ApplyConfiguration(new CommentWithoutUserMap());
             modelBuilder.ApplyConfiguration(new CategoryAndArticleMap());
             modelBuilder.ApplyConfiguration(new ArticlePictureMap());
-            modelBuilder.ApplyConfiguration(new RankMap());
-
-
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

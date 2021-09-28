@@ -85,6 +85,24 @@ namespace CmnSoftwareBackend.Services.Concrete
             });
         }
 
+        public async Task<IDataResult> GetArticleByArticlePictureId(int articlePictureId)
+        {
+            IQueryable<Article> query = DbContext.Set<Article>().AsNoTracking().Where(x => x.ArticlePictures.Any(ab => ab.Id == articlePictureId));
+            if (!await DbContext.ArticlePictures.AsNoTracking().AnyAsync(ap => ap.Id == articlePictureId))
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı", "articlePictureId"));
+            return new DataResult(ResultStatus.Success, query);
+        }
+
+        public async Task<IDataResult> GetArticleByUserId(Guid userId)
+        {
+            IQueryable<Article> query = DbContext.Set<Article>();
+            if (!await DbContext.Users.AnyAsync(a => a.Id == userId))
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı bulunamadı", "userId"));
+
+            query = query.Where(a => a.UserId == userId);
+            return new DataResult(ResultStatus.Success, query);
+        }
+
         public async Task<IDataResult> GetByIdAsync(int articleId, bool includeArticlePicture)
         {
             IQueryable<Article> query = DbContext.Set<Article>();
