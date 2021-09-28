@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CmnSoftwareBackend.Data.Migrations
 {
     [DbContext(typeof(CmnDbContext))]
-    [Migration("20210927051736_InitialCreate")]
+    [Migration("20210928120812_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,12 +172,7 @@ namespace CmnSoftwareBackend.Data.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("RankId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("RankId");
 
                     b.ToTable("Categories");
                 });
@@ -368,7 +363,7 @@ namespace CmnSoftwareBackend.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2021, 9, 27, 8, 17, 36, 167, DateTimeKind.Local).AddTicks(4810),
+                            CreatedDate = new DateTime(2021, 9, 28, 15, 8, 12, 80, DateTimeKind.Local).AddTicks(2690),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Admin"
@@ -376,41 +371,11 @@ namespace CmnSoftwareBackend.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2021, 9, 27, 8, 17, 36, 173, DateTimeKind.Local).AddTicks(2530),
+                            CreatedDate = new DateTime(2021, 9, 28, 15, 8, 12, 91, DateTimeKind.Local).AddTicks(4150),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "NormalUser"
                         });
-                });
-
-            modelBuilder.Entity("CmnSoftwareBackend.Entities.Concrete.Rank", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid?>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<Guid?>("ModifiedByUserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime?>("ModifiedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Ranks");
                 });
 
             modelBuilder.Entity("CmnSoftwareBackend.Entities.Concrete.User", b =>
@@ -657,17 +622,6 @@ namespace CmnSoftwareBackend.Data.Migrations
                     b.Navigation("Article");
                 });
 
-            modelBuilder.Entity("CmnSoftwareBackend.Entities.Concrete.Category", b =>
-                {
-                    b.HasOne("CmnSoftwareBackend.Entities.Concrete.Rank", "Rank")
-                        .WithMany("Categories")
-                        .HasForeignKey("RankId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Rank");
-                });
-
             modelBuilder.Entity("CmnSoftwareBackend.Entities.Concrete.CategoryAndArticle", b =>
                 {
                     b.HasOne("CmnSoftwareBackend.Entities.Concrete.Article", "Article")
@@ -784,11 +738,6 @@ namespace CmnSoftwareBackend.Data.Migrations
             modelBuilder.Entity("CmnSoftwareBackend.Entities.Concrete.OperationClaim", b =>
                 {
                     b.Navigation("UserOperationClaims");
-                });
-
-            modelBuilder.Entity("CmnSoftwareBackend.Entities.Concrete.Rank", b =>
-                {
-                    b.Navigation("Categories");
                 });
 
             modelBuilder.Entity("CmnSoftwareBackend.Entities.Concrete.User", b =>

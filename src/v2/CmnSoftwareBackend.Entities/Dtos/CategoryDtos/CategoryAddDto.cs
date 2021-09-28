@@ -9,6 +9,5 @@ namespace CmnSoftwareBackend.Entities.Dtos.CategoryDtos
         public string Image { get; set; }
         public string Description { get; set; }
         public string Color { get; set; }
-        public int RankId { get; set; }
     }
 }
