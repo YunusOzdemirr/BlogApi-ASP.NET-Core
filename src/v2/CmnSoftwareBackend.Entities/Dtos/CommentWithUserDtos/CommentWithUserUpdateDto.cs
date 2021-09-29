@@ -3,6 +3,7 @@ namespace CmnSoftwareBackend.Entities.Dtos.CommentWithUserDtos
 {
     public class CommentWithUserUpdateDto
     {
+        public int Id { get; set; }
         public string Text { get; set; }
         public sbyte Star { get; set; }
         public Guid UserId { get; set; }

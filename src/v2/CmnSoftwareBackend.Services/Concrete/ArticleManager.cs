@@ -110,7 +110,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             if (article == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı", "Id"));
             if (includeArticlePicture) query = query.AsNoTracking().Include(a => a.ArticlePictures);
-
+            
             return new DataResult(ResultStatus.Success, article);
         }
 
