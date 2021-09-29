@@ -15,7 +15,7 @@ namespace CmnSoftwareBackend.Services.AutoMapper.Profiles
             //    CreateMap<ArticleDto, Article>();
             //
             CreateMap<CommentWithUserDto, CommentWithUser>().ForMember(dest=>dest.CreatedDate,x=>x.MapFrom(x=>DateTime.Now)).ForMember(dest=>dest.ModifiedDate,x=>x.MapFrom(x=>DateTime.Now)).ForMember(dest=>dest.IsActive,x=>x.MapFrom(x=>true)).ForMember(dest=>dest.IsDeleted,x=>x.MapFrom(x=>false));
-            CreateMap<CommentWithUserUpdateDto, CommentWithoutUser>().ForMember(dest=>dest.ModifiedDate,x=>x.MapFrom(x=>DateTime.Now));
+            CreateMap<CommentWithUserUpdateDto, CommentWithUser>().ForMember(dest=>dest.ModifiedDate,x=>x.MapFrom(x=>DateTime.Now));
             
         }
     }

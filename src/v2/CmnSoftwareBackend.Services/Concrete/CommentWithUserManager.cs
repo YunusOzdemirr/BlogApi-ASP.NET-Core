@@ -98,15 +98,41 @@ namespace CmnSoftwareBackend.Services.Concrete
             if (includeArticle) query = query.AsNoTracking().Include(a => a.Article);
             return new DataResult(ResultStatus.Success,comment);
         }
-
-        public Task<IResult> HardDeleteAsync(int commentWithUserId)
+        //test
+        public async Task<IDataResult> GetAllCommentByUserId(Guid userId, bool includeArticle)
         {
-            throw new NotImplementedException();
+            IQueryable<CommentWithUser> query = DbContext.Set<CommentWithUser>();
+           
+            if (!await DbContext.Users.AsNoTracking().AnyAsync(a=>a.Id==userId))
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("böyle bir kullanıcı bulunamadı", "userId"));
+            if (includeArticle) query = query.AsNoTracking().Include(a => a.Article);
+
+            var comment = query.AsNoTracking().Where(a => a.UserId == userId);
+            return new DataResult(ResultStatus.Success, comment);
         }
 
-        public Task<IDataResult> UpdateAsync(CommentWithUserUpdateDto commentWithUserUpdateDto)
+        public async Task<IResult> HardDeleteAsync(int commentWithUserId)
         {
-            throw new NotImplementedException();
+            var comment =await DbContext.CommentWithUsers.SingleOrDefaultAsync(a => a.Id == commentWithUserId);
+            if (comment is null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir yorum bulunamadı","Id"));
+
+            DbContext.CommentWithUsers.Remove(comment);
+            await DbContext.SaveChangesAsync();
+            return new Result(ResultStatus.Success, "Başarıyla silindi");
+        }
+
+        public async Task<IDataResult> UpdateAsync(CommentWithUserUpdateDto commentWithUserUpdateDto)
+        {
+            var oldComment =await DbContext.CommentWithUsers.SingleOrDefaultAsync(a => a.Id == commentWithUserUpdateDto.Id);
+            if (oldComment is null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir yorum bulunamadı","Id"));
+
+            var newUser = Mapper.Map<CommentWithUserUpdateDto,CommentWithUser>(commentWithUserUpdateDto,oldComment);
+            newUser.ModifiedDate = DateTime.Now;
+            DbContext.CommentWithUsers.Update(newUser);
+            await DbContext.SaveChangesAsync();
+            return new DataResult(ResultStatus.Success,commentWithUserUpdateDto);
         }
     }
 }

@@ -21,6 +21,11 @@ namespace CmnSoftwareBackend.API.Controllers
     {
         private readonly ICommentWithoutUserService _commentWithoutUserService;
 
+        public CommentWithoutUsersController(ICommentWithoutUserService commentWithoutUserService)
+        {
+            _commentWithoutUserService = commentWithoutUserService;
+        }
+
         [Route("[action]")]
         public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticle)
         {
