@@ -10,6 +10,7 @@ namespace CmnSoftwareBackend.Services.AutoMapper.Profiles
         public CommentWithoutUserProfile()
         {
             CreateMap<CommentWithoutUserDto, CommentWithoutUser>().ForMember(dest => dest.CreatedDate, x => x.MapFrom(x => DateTime.Now)).ForMember(dest => dest.ModifiedDate, x => x.MapFrom(x => DateTime.Now)).ForMember(dest => dest.IsActive, x => x.MapFrom(x => true)).ForMember(dest => dest.IsDeleted, x => x.MapFrom(x => false));
+            CreateMap<CommentWithoutUserAddDto, CommentWithoutUser>().ForMember(dest => dest.CreatedDate, x => x.MapFrom(x => DateTime.Now)).ForMember(dest => dest.ModifiedDate, x => x.MapFrom(x => DateTime.Now)).ForMember(dest => dest.IsActive, x => x.MapFrom(x => true)).ForMember(dest => dest.IsDeleted, x => x.MapFrom(x => false));
             CreateMap<CommentWithoutUserUpdateDto, CommentWithoutUser>().ForMember(dest => dest.ModifiedDate, x => x.MapFrom(x => DateTime.Now));
 
         }

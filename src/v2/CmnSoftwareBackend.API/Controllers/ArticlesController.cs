@@ -27,20 +27,35 @@ namespace CmnSoftwareBackend.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(200)]
-
         [Route("[action]")]
-        public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture)
+        public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture, bool includeCommentWithoutUser, bool includeCommentWithUser)
         {
-            var result = await _articleService.GetAllAsync(isActive, isDeleted, isAscending, currentPage, pageSize, orderBy, includeArticlePicture);
+            var result = await _articleService.GetAllAsync(isActive, isDeleted, isAscending, currentPage, pageSize, orderBy, includeArticlePicture, includeCommentWithoutUser, includeCommentWithUser);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "GetAll" })));
         }
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
-        public async Task<IActionResult> GetById(int articleId, bool includeArticlePicture)
+        public async Task<IActionResult> GetById(int articleId, bool includeArticlePicture, bool commentWithUser ,bool commentWithoutUser)
         {
-            var result = await _articleService.GetByIdAsync(articleId, includeArticlePicture);
+            var result = await _articleService.GetByIdAsync(articleId, includeArticlePicture, commentWithUser, commentWithoutUser);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "GetById" })));
+        }
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [Route("[action]")]
+        public async Task<IActionResult> GetArticleByCommentWithoutUserId(int commentWithoutUserId)
+        {
+            var result = await _articleService.GetArticleByCommentWithoutUserIdAsync(commentWithoutUserId);
+            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "GetArticleByCommentWithoutUserId" })));
+        }
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [Route("[action]")]
+        public async Task<IActionResult> GetArticleByCommentWithUserId(int commentWithUserId)
+        {
+            var result = await _articleService.GetArticleByCommentWithUserIdAsync(commentWithUserId);
+            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "GetArticleByCommentWithUserId" })));
         }
         [HttpGet]
         [ProducesResponseType(200)]
@@ -55,8 +70,8 @@ namespace CmnSoftwareBackend.API.Controllers
         [Route("[action]")]
         public async Task<IActionResult> GetArticleByArticlePictureId(int ArticlePictureId)
         {
-            var articles =await _articleService.GetArticleByArticlePictureId(ArticlePictureId);
-            return Ok(new SuccessDataApiResult(articles,Url.Link("",new {Controller="Articles",Action="GetArticleByArticlePictureId" })));
+            var articles = await _articleService.GetArticleByArticlePictureId(ArticlePictureId);
+            return Ok(new SuccessDataApiResult(articles, Url.Link("", new { Controller = "Articles", Action = "GetArticleByArticlePictureId" })));
         }
 
         [HttpPost]
@@ -72,9 +87,9 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         [Route("[action]")]
-        public async Task<IActionResult> DeleteAsync(ArticleAddDto articleAddDto)
+        public async Task<IActionResult> DeleteAsync(int articleId, Guid CreatedUserId)
         {
-            var result = await _articleService.AddAsync(articleAddDto);
+            var result = await _articleService.DeleteAsync(articleId, CreatedUserId);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "Delete" })));
         }
         [HttpPost]
@@ -82,9 +97,9 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         [Route("[action]")]
-        public async Task<IActionResult> UpdateAsync(ArticleAddDto articleAddDto)
+        public async Task<IActionResult> UpdateAsync(ArticleUpdateDto articleUpdateDto)
         {
-            var result = await _articleService.AddAsync(articleAddDto);
+            var result = await _articleService.UpdateAsync(articleUpdateDto);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "Update" })));
         }
         [HttpPost]
@@ -92,10 +107,10 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         [Route("[action]")]
-        public async Task<IActionResult> HardDeleteAsync(ArticleAddDto articleAddDto)
+        public async Task<IActionResult> HardDeleteAsync(int articleId)
         {
-            var result = await _articleService.AddAsync(articleAddDto);
-            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "HardDelete" })));
+            var result = await _articleService.HardDeleteAsync(articleId);
+            return Ok(new SuccessApiResult(result, Url.Link("", new { Controller = "Articles", Action = "HardDelete" })));
         }
 
     }

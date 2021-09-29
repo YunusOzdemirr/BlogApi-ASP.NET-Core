@@ -37,9 +37,11 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> DeleteAsync(int commentWithoutUserId)
         {
-            var comment = await DbContext.CommentWithoutUsers.Include(a => a.Article).AsNoTracking().SingleOrDefaultAsync(cwu => cwu.Id == commentWithoutUserId);
-            if (comment == null && comment.Article == null)
-                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir comment bulunamadı", "Id"));
+            var comment = await DbContext.CommentWithoutUsers.Include(a => a.Article).SingleOrDefaultAsync(cwu => cwu.Id == commentWithoutUserId);
+            if (comment == null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir yorum bulunamadı", "Id"));
+            if (comment.Article == null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu yoruma ait bir makale bulunamadı", "Id"));
 
             comment.IsActive = false;
             comment.IsDeleted = true;
@@ -53,14 +55,14 @@ namespace CmnSoftwareBackend.Services.Concrete
             IQueryable<CommentWithoutUser> query = DbContext.Set<CommentWithoutUser>();
             if (isActive.HasValue) query = query.Where(a => a.IsActive == isActive);
             if (isDeleted.HasValue) query = query.Where(a => a.IsDeleted == isDeleted);
-            if (includeArticle) query = query.AsNoTracking().Include(a=>a.Article);
+            if (includeArticle) query = query.AsNoTracking().Include(a => a.Article);
 
-            var commentCount =await query.AsNoTracking().CountAsync();
+            var commentCount = await query.AsNoTracking().CountAsync();
             pageSize = pageSize > 100 ? 100 : pageSize;
             switch (orderBy)
             {
                 case OrderBy.Id:
-                        query = isAscending ? query.OrderBy(a => a.Id) : query.OrderByDescending(a => a.Id);
+                    query = isAscending ? query.OrderBy(a => a.Id) : query.OrderByDescending(a => a.Id);
                     break;
                 case OrderBy.Az:
                     query = isAscending ? query.OrderBy(a => a.UserName) : query.OrderByDescending(a => a.UserName);
@@ -69,14 +71,14 @@ namespace CmnSoftwareBackend.Services.Concrete
                     query = isAscending ? query.OrderBy(a => a.CreatedDate) : query.OrderByDescending(a => a.CreatedDate);
                     break;
             }
-            return new DataResult(ResultStatus.Success,new CommentWithoutUserListDto
+            return new DataResult(ResultStatus.Success, new CommentWithoutUserListDto
             {
                 //    ArticlePictures = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(ap => Mapper.Map<ArticlePictureDto>(ap)).ToListAsync(),
-                CommentWithoutUsers =await query.Skip((currentPage-1)*pageSize).Take(pageSize).Select(a=>Mapper.Map<CommentWithoutUser>(a)).ToListAsync(),
-                CurrentPage=currentPage,
-                TotalCount=commentCount,
-                PageSize=pageSize,
-                IsAscending=isAscending
+                CommentWithoutUsers = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(a => Mapper.Map<CommentWithoutUser>(a)).ToListAsync(),
+                CurrentPage = currentPage,
+                TotalCount = commentCount,
+                PageSize = pageSize,
+                IsAscending = isAscending
             });
         }
 
@@ -88,7 +90,7 @@ namespace CmnSoftwareBackend.Services.Concrete
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir yorum bulunamadı", "Id"));
             if (includeArticle) query = query.AsNoTracking().Include(a => a.Article);
 
-            return new DataResult(ResultStatus.Success, comment);
+            return new DataResult(ResultStatus.Success, query);
         }
 
         public async Task<IResult> HardDeleteAsync(int commentWithoutUserId)
@@ -104,14 +106,19 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> UpdateAsync(CommentWithoutUserUpdateDto commentWithoutUserUpdateDto)
         {
-            var article = await DbContext.Articles.SingleOrDefaultAsync(cwu => cwu.Id == commentWithoutUserUpdateDto.ArticleId);
+            var article = await DbContext.Articles.AsNoTracking().SingleOrDefaultAsync(cwu => cwu.Id == commentWithoutUserUpdateDto.ArticleId);
+            var oldComment= await DbContext.CommentWithoutUsers.SingleOrDefaultAsync(a => a.Id == commentWithoutUserUpdateDto.Id);
             if (article == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı", "ArticleId"));
+            if (article.Id != commentWithoutUserUpdateDto.ArticleId)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu yorum bu makaleye ait değil", "ArticleId"));
+            if (commentWithoutUserUpdateDto.UserName != oldComment.UserName)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu yorum bu kullanıcıya ait değil", "UserName"));
 
-            var newComment = Mapper.Map<CommentWithoutUserUpdateDto, CommentWithoutUser>(commentWithoutUserUpdateDto);
+            var newComment = Mapper.Map<CommentWithoutUserUpdateDto, CommentWithoutUser>(commentWithoutUserUpdateDto,oldComment);
             DbContext.CommentWithoutUsers.Update(newComment);
             await DbContext.SaveChangesAsync();
-            return new DataResult(ResultStatus.Success, commentWithoutUserUpdateDto);
+            return new DataResult(ResultStatus.Success, newComment);
 
         }
     }
