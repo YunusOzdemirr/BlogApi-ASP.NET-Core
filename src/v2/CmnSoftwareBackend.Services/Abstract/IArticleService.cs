@@ -8,8 +8,11 @@ namespace CmnSoftwareBackend.Services.Abstract
 {
     public interface IArticleService
     {
-        Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy,bool includePicture);
+        Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending,
+            int currentPage, int pageSize, OrderBy orderBy,bool includePicture, bool includeCommentWithoutUser, bool includeCommentWithUser);
         Task<IDataResult> GetByIdAsync(int articleId,bool includeArticlePicture);
+        Task<IDataResult> GetArticleByCommentWithUserIdAsync(int commentWithUserId);
+        Task<IDataResult> GetArticleByCommentWithoutUserIdAsync(int commentWithoutUserId);
         Task<IDataResult> GetArticleByUserId(Guid userId);
         Task<IDataResult> GetArticleByArticlePictureId(int articlePictureId);
         Task<IDataResult> AddAsync(ArticleAddDto articleAddDto);

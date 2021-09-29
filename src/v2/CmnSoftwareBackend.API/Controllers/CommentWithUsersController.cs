@@ -24,43 +24,49 @@ namespace CmnSoftwareBackend.API.Controllers
         {
             _commentWithUserService = commentWithUserService;
         }
+        [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticle, bool includeUser)
         {
             var result = await _commentWithUserService.GetAllAsync(isActive, isDeleted, isAscending, currentPage, pageSize, orderBy, includeArticle, includeUser);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "CommentWithUser", Action = "GetAll" })));
         }
+        [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> GetByIdAsync(int commentWithUserId, bool includeArticle)
         {
             var result = await _commentWithUserService.GetByIdAsync(commentWithUserId, includeArticle);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "CommentWithUser", Action = "GetById" })));
         }
+        [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> AddAsync(CommentWithUserAddDto commentWithUserAddDto)
         {
             var result = await _commentWithUserService.AddAsync(commentWithUserAddDto);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "CommentWithUser", Action = "Add" })));
         }
+        [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> UpdateAsync(CommentWithUserUpdateDto commentWithUserUpdateDto)
         {
             var result = await _commentWithUserService.UpdateAsync(commentWithUserUpdateDto);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "CommentWithUser", Action = "Update" })));
         }
+        [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> GetCommentByUserId(Guid userId, bool includeArticle)
         {
             var result =await _commentWithUserService.GetAllCommentByUserId(userId, includeArticle);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "CommentWithUser", Action = "GetCommentByUserId" })));
         }
+        [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> DeleteAsync(int commentWithUserId, Guid CreatedByUserId)
         {
             var result = await _commentWithUserService.DeleteAsync(commentWithUserId, CreatedByUserId);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "CommentWithUser", Action = "GetCommentByUserId" })));
         }
-
+        [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> HardDeleteAsync(int commentId)
         {

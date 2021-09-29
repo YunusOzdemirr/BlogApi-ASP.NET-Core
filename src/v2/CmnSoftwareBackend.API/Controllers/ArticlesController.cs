@@ -27,7 +27,6 @@ namespace CmnSoftwareBackend.API.Controllers
 
         [HttpGet]
         [ProducesResponseType(200)]
-
         [Route("[action]")]
         public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture)
         {
@@ -72,9 +71,9 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         [Route("[action]")]
-        public async Task<IActionResult> DeleteAsync(ArticleAddDto articleAddDto)
+        public async Task<IActionResult> DeleteAsync(int articleId,Guid CreatedUserId)
         {
-            var result = await _articleService.AddAsync(articleAddDto);
+            var result = await _articleService.DeleteAsync(articleId,CreatedUserId);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "Delete" })));
         }
         [HttpPost]
@@ -82,9 +81,9 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         [Route("[action]")]
-        public async Task<IActionResult> UpdateAsync(ArticleAddDto articleAddDto)
+        public async Task<IActionResult> UpdateAsync(ArticleUpdateDto articleUpdateDto)
         {
-            var result = await _articleService.AddAsync(articleAddDto);
+            var result = await _articleService.UpdateAsync(articleUpdateDto);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "Update" })));
         }
         [HttpPost]
@@ -92,10 +91,10 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         [Route("[action]")]
-        public async Task<IActionResult> HardDeleteAsync(ArticleAddDto articleAddDto)
+        public async Task<IActionResult> HardDeleteAsync(int articleId)
         {
-            var result = await _articleService.AddAsync(articleAddDto);
-            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "HardDelete" })));
+            var result = await _articleService.HardDeleteAsync(articleId);
+            return Ok(new SuccessApiResult(result, Url.Link("", new { Controller = "Articles", Action = "HardDelete" })));
         }
 
     }

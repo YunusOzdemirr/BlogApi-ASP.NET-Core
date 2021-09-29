@@ -25,7 +25,7 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> AddAsync(ArticleAddDto articleAddDto)
         {
-            var user = DbContext.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == articleAddDto.UserId);
+            var user = await DbContext.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == articleAddDto.UserId);
             if (user == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı bulunamadı", "UserId"));
             if (await DbContext.Articles.AsNoTracking().AnyAsync(a => a.Title == articleAddDto.Title))
@@ -54,12 +54,14 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, $"{article.Title} başlıklı makale başarıyla silinmiştir", article);
         }
 
-        public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture)
+        public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticlePicture, bool includeCommentWithoutUser, bool includeCommentWithUser)
         {
             IQueryable<Article> query = DbContext.Set<Article>();
             if (isActive.HasValue) query = query.AsNoTracking().Where(a => a.IsActive == isActive);
             if (isDeleted.HasValue) query = query.AsNoTracking().Where(a => a.IsDeleted == isDeleted);
             if (includeArticlePicture) query = query.AsNoTracking().Include(a => a.ArticlePictures);
+            if (includeCommentWithoutUser) query = query.AsNoTracking().Include(a => a.CommentWithoutUsers);
+            if (includeCommentWithUser) query = query.AsNoTracking().Include(a => a.CommentWithUsers);
             pageSize = pageSize > 100 ? 100 : pageSize;
             var articleCount = await query.AsNoTracking().CountAsync();
             switch (orderBy)
@@ -93,6 +95,16 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, query);
         }
 
+        public Task<IDataResult> GetArticleByCommentWithoutUserIdAsync(int commentWithoutUserId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IDataResult> GetArticleByCommentWithUserIdAsync(int commentWithUserId)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<IDataResult> GetArticleByUserId(Guid userId)
         {
             IQueryable<Article> query = DbContext.Set<Article>();
@@ -110,7 +122,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             if (article == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı", "Id"));
             if (includeArticlePicture) query = query.AsNoTracking().Include(a => a.ArticlePictures);
-            
+
             return new DataResult(ResultStatus.Success, article);
         }
 

@@ -107,6 +107,8 @@ namespace CmnSoftwareBackend.Services.Concrete
             var article = await DbContext.Articles.SingleOrDefaultAsync(cwu => cwu.Id == commentWithoutUserUpdateDto.ArticleId);
             if (article == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı", "ArticleId"));
+            if (article.Id != commentWithoutUserUpdateDto.ArticleId)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu yorum bu makaleye ait değil", "ArticleId"));
 
             var newComment = Mapper.Map<CommentWithoutUserUpdateDto, CommentWithoutUser>(commentWithoutUserUpdateDto);
             DbContext.CommentWithoutUsers.Update(newComment);
