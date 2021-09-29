@@ -28,10 +28,10 @@ namespace CmnSoftwareBackend.Services.Concrete
         {
             var user = await DbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userChangePasswordDto.Id);
             if (user == null)
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı  yok.", "Id"));
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı  yok.", "Id"));
 
             if (!HashingHelper.VerifyPasswordHash(userChangePasswordDto.Password, user.PasswordHash, user.PasswordSalt))
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Şifreler eşleşmiyor.", "Password"));
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Şifreler eşleşmiyor.", "Password"));
 
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(userChangePasswordDto.NewPassword, out passwordHash, out passwordSalt);
@@ -92,9 +92,8 @@ namespace CmnSoftwareBackend.Services.Concrete
         {
             var user = await DbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı bulunmamaktadır.", "Id"));
-            }
+
             return new DataResult(ResultStatus.Success, Mapper.Map<UserDto>(user));
         }
 
@@ -102,19 +101,27 @@ namespace CmnSoftwareBackend.Services.Concrete
         {
             var user = await DbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserName == userName);
             if (user == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı bulunmamaktadır.", "UserName"));
-            }
+
             return new DataResult(ResultStatus.Success, Mapper.Map<UserDto>(user));
+        }
+
+        public async Task<IDataResult> GetUserByUserPictureIdAsync(int userPictureId)
+        {
+            IQueryable<User> query = DbContext.Set<User>();
+            var user =await query.AsNoTracking().SingleOrDefaultAsync(a => a.UserPictureId==userPictureId);
+            if (user is null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı", "userPictureId"));
+
+            return new DataResult(ResultStatus.Success,user);
         }
 
         public async Task<IResult> HardDeleteAsync(Guid userId)
         {
             var user = await DbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
             if (user == null)
-            {
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı bulunmamaktadır.", "Id"));
-            }
+
             DbContext.Remove(user);
             await DbContext.SaveChangesAsync();
             return new Result(ResultStatus.Success, $"{user.FirstName} adlı kullanıcı kalıcı olarak silinmiştir.");
@@ -123,15 +130,14 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> UpdateAsync(UserUpdateDto userUpdateDto)
         {
             var oldUser = await DbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userUpdateDto.Id);
-            if (oldUser != null)
-            {
-                var newUser = Mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser);
-                DbContext.Users.Update(newUser);
-                await DbContext.SaveChangesAsync();
-                var userDto = Mapper.Map<UserDto>(newUser);
-                return new DataResult(ResultStatus.Success, $"{newUser.FirstName} adlı kullanıcı başarıyla güncelleştirildi");
-            }
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı yok.", "Id"));
+            if (oldUser == null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı yok.", "Id"));
+
+            var newUser = Mapper.Map<UserUpdateDto, User>(userUpdateDto, oldUser);
+            DbContext.Users.Update(newUser);
+            await DbContext.SaveChangesAsync();
+            var userDto = Mapper.Map<UserDto>(newUser);
+            return new DataResult(ResultStatus.Success, $"{newUser.FirstName} adlı kullanıcı başarıyla güncelleştirildi");
         }
     }
 }

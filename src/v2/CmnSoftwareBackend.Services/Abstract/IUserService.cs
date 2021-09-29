@@ -12,6 +12,7 @@ namespace CmnSoftwareBackend.Services.Abstract
         Task<IDataResult> GetByIdAsync(Guid userId, bool includeOwnedGroups, bool includeGroups);
         Task<IDataResult> ChangePasswordAsync(UserChangePasswordDto userChangePasswordDto);
         Task<IDataResult> GetByUserNameAsync(string userName);
+        Task<IDataResult> GetUserByUserPictureIdAsync(int userPictureId);
         Task<IDataResult> UpdateAsync(UserUpdateDto userUpdateDto);
         Task<IResult> DeleteAsync(Guid userId, Guid modifiedByUserId);
         Task<IResult> HardDeleteAsync(Guid userId);
