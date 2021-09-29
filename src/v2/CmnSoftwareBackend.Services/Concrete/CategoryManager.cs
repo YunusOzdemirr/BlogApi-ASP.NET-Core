@@ -81,7 +81,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             await DbContext.AddAsync(category);
             await DbContext.SaveChangesAsync();
             return new DataResult(ResultStatus.Success, $"{category.Name} adlı kategori başarıyla eklendi",
-                categoryAddDto);
+                category);
         }
 
         public async Task<IDataResult> UpdateAsync(CategoryUpdateDto categoryUpdateDto)

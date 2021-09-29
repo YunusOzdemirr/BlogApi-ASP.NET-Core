@@ -115,15 +115,17 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, query);
         }
 
-        public async Task<IDataResult> GetByIdAsync(int articleId, bool includeArticlePicture)
+        public async Task<IDataResult> GetByIdAsync(int articleId, bool includeArticlePicture, bool includeCommentWithUserId, bool includeCommentWithoutUserId)
         {
             IQueryable<Article> query = DbContext.Set<Article>();
             var article = await query.AsNoTracking().SingleOrDefaultAsync(a => a.Id == articleId);
             if (article == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı", "Id"));
             if (includeArticlePicture) query = query.AsNoTracking().Include(a => a.ArticlePictures);
+            if (includeCommentWithoutUserId) query = query.AsNoTracking().Include(a => a.CommentWithoutUsers);
+            if (includeCommentWithUserId) query = query.AsNoTracking().Include(a => a.CommentWithUsers);
 
-            return new DataResult(ResultStatus.Success, article);
+            return new DataResult(ResultStatus.Success, query);
         }
 
         public async Task<IResult> HardDeleteAsync(int articleId)

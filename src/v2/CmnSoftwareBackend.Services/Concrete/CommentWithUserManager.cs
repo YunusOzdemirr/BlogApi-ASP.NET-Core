@@ -89,14 +89,15 @@ namespace CmnSoftwareBackend.Services.Concrete
             });
         }
 
-        public async Task<IDataResult> GetByIdAsync(int commentWithUserId, bool includeArticle)
+        public async Task<IDataResult> GetByIdAsync(int commentWithUserId, bool includeArticle,bool includeUser)
         {
             IQueryable<CommentWithUser> query = DbContext.Set<CommentWithUser>();
             var comment =await query.AsNoTracking().SingleOrDefaultAsync(a => a.Id == commentWithUserId);
             if (comment == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir yorum bulunamadı", "Id"));
             if (includeArticle) query = query.AsNoTracking().Include(a => a.Article);
-            return new DataResult(ResultStatus.Success,comment);
+            if (includeUser) query = query.AsNoTracking().Include(a => a.User);
+            return new DataResult(ResultStatus.Success,query);
         }
         //test
         public async Task<IDataResult> GetAllCommentByUserId(Guid userId, bool includeArticle)
@@ -107,8 +108,8 @@ namespace CmnSoftwareBackend.Services.Concrete
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("böyle bir kullanıcı bulunamadı", "userId"));
             if (includeArticle) query = query.AsNoTracking().Include(a => a.Article);
 
-            var comment = query.AsNoTracking().Where(a => a.UserId == userId);
-            return new DataResult(ResultStatus.Success, comment);
+            var comment = query.AsNoTracking().Include(a=>a.User).Where(a => a.UserId == userId);
+            return new DataResult(ResultStatus.Success, query);
         }
 
         public async Task<IResult> HardDeleteAsync(int commentWithUserId)

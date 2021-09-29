@@ -33,9 +33,9 @@ namespace CmnSoftwareBackend.API.Controllers
         }
         [HttpGet]
         [Route("[action]")]
-        public async Task<IActionResult> GetByIdAsync(int commentWithUserId, bool includeArticle)
+        public async Task<IActionResult> GetByIdAsync(int commentWithUserId, bool includeArticle,bool includeUser)
         {
-            var result = await _commentWithUserService.GetByIdAsync(commentWithUserId, includeArticle);
+            var result = await _commentWithUserService.GetByIdAsync(commentWithUserId, includeArticle,includeUser);
             return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "CommentWithUser", Action = "GetById" })));
         }
         [HttpPost]
