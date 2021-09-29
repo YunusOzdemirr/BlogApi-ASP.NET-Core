@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CmnSoftwareBackend.Data.Concrete.EntityFramework.Contexts;
@@ -56,14 +57,46 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         }
 
-        public Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy)
+        public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy,bool includeArticle,bool includeUser)
         {
-            throw new NotImplementedException();
+            IQueryable<CommentWithUser> query = DbContext.Set<CommentWithUser>().AsNoTracking();
+            if (isActive.HasValue) query = query.Where(a => a.IsActive == isActive);
+            if (isDeleted.HasValue) query = query.Where(a => a.IsDeleted == isDeleted);
+            if (includeArticle) query = query.Include(a => a.Article);
+            if (includeUser) query = query.Include(a => a.User);
+
+            pageSize = pageSize > 100 ? 100 : pageSize;
+            switch (orderBy)
+            {
+                case OrderBy.Id:
+                    query = isAscending ? query.OrderBy(a => a.Id) : query.OrderByDescending(a => a.Id);
+                    break;
+                case OrderBy.Az:
+                    query = isAscending ? query.OrderBy(a => a.User.UserName) : query.OrderByDescending(a => a.User.UserName);
+                    break;
+                default:
+                    query = isAscending ? query.OrderBy(a => a.CreatedDate) : query.OrderByDescending(a => a.CreatedDate);
+                    break;
+            }
+            //await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(a => Mapper.Map<Article>(a)).ToListAsync(),
+            return new DataResult(ResultStatus.Success, new CommentWithUserListDto
+            {
+                CommentWithUsers = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(a => Mapper.Map<CommentWithUser>(a)).ToListAsync(),
+                TotalCount =await query.CountAsync(),
+                CurrentPage=currentPage,
+                IsAscending=isAscending,
+                PageSize=pageSize
+            });
         }
 
-        public Task<IDataResult> GetByIdAsync(int commentWithUserId, bool includeArticle)
+        public async Task<IDataResult> GetByIdAsync(int commentWithUserId, bool includeArticle)
         {
-            throw new NotImplementedException();
+            IQueryable<CommentWithUser> query = DbContext.Set<CommentWithUser>();
+            var comment =await query.AsNoTracking().SingleOrDefaultAsync(a => a.Id == commentWithUserId);
+            if (comment == null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir yorum bulunamadı", "Id"));
+            if (includeArticle) query = query.AsNoTracking().Include(a => a.Article);
+            return new DataResult(ResultStatus.Success,comment);
         }
 
         public Task<IResult> HardDeleteAsync(int commentWithUserId)
