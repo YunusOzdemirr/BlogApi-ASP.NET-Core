@@ -6417,3 +6417,11 @@ ClientConnectionId:00000000-0000-0000-0000-000000000000
 2021-09-29 17:57:09.2386 Info Validating config: TargetNames=allfile, ownFile-web, database, ConfigItems=75, FilePath=/Users/yunus/Documents/GitHub/BlogApi-ASP.NET-Core/src/v2/CmnSoftwareBackend.API/bin/Debug/net5.0/NLog.config
 2021-09-29 17:57:09.3245 Info Configuration initialized.
 2021-09-29 17:57:09.3254 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.11.13229. Product version: 4.7.11+33ed3a9f86277651e93ddf39cda64a046a06778b. GlobalAssemblyCache: False
+2021-09-29 18:28:32.8768 Info Message Template Auto Format enabled
+2021-09-29 18:28:32.8979 Info Loading assembly: NLog.Web.AspNetCore
+2021-09-29 18:28:32.9334 Info Adding target FileTarget(Name=allfile)
+2021-09-29 18:28:32.9346 Info Adding target FileTarget(Name=ownFile-web)
+2021-09-29 18:28:32.9440 Info Adding target DatabaseTarget(Name=database)
+2021-09-29 18:28:33.0378 Info Validating config: TargetNames=allfile, ownFile-web, database, ConfigItems=75, FilePath=/Users/yunus/Documents/GitHub/BlogApi-ASP.NET-Core/src/v2/CmnSoftwareBackend.API/bin/Debug/net5.0/NLog.config
+2021-09-29 18:28:33.1284 Info Configuration initialized.
+2021-09-29 18:28:33.1291 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.11.13229. Product version: 4.7.11+33ed3a9f86277651e93ddf39cda64a046a06778b. GlobalAssemblyCache: False

@@ -44,6 +44,22 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        public async Task<IActionResult> GetArticleByCommentWithoutUserId(int commentWithoutUserId)
+        {
+            var result = await _articleService.GetArticleByCommentWithoutUserIdAsync(commentWithoutUserId);
+            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "GetArticleByCommentWithoutUserId" })));
+        }
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [Route("[action]")]
+        public async Task<IActionResult> GetArticleByCommentWithUserId(int commentWithUserId)
+        {
+            var result = await _articleService.GetArticleByCommentWithUserIdAsync(commentWithUserId);
+            return Ok(new SuccessDataApiResult(result, Url.Link("", new { Controller = "Articles", Action = "GetArticleByCommentWithUserId" })));
+        }
+        [HttpGet]
+        [ProducesResponseType(200)]
+        [Route("[action]")]
         public async Task<IActionResult> GetArticleByUserId(Guid userId)
         {
             var article = await _articleService.GetArticleByUserId(userId);

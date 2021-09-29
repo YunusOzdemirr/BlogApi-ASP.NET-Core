@@ -95,14 +95,23 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, query);
         }
 
-        public Task<IDataResult> GetArticleByCommentWithoutUserIdAsync(int commentWithoutUserId)
+        public async Task<IDataResult> GetArticleByCommentWithoutUserIdAsync(int commentWithoutUserId)
         {
-            throw new NotImplementedException();
+            IQueryable<Article> query = DbContext.Set<Article>();
+            query = query.AsNoTracking().Where(a => a.CommentWithoutUsers.Any(ab => ab.Id == commentWithoutUserId));
+            if (!await DbContext.CommentWithoutUsers.AnyAsync(a => a.Id == commentWithoutUserId))
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir mesaj bulunamadı", "commentWithoutUserId"));
+
+            return new DataResult(ResultStatus.Success, query);
         }
 
-        public Task<IDataResult> GetArticleByCommentWithUserIdAsync(int commentWithUserId)
+        public async Task<IDataResult> GetArticleByCommentWithUserIdAsync(int commentWithUserId)
         {
-            throw new NotImplementedException();
+            IQueryable<Article> query = DbContext.Set<Article>();
+            var comment = query.AsNoTracking().Where(a => a.CommentWithUsers.Any(a=>a.Id == commentWithUserId));
+            if (comment is null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu kullanıcı Id'sine ait bir yorum bulunamadı","commentWithUserId"));
+            return new DataResult(ResultStatus.Success, query);
         }
 
         public async Task<IDataResult> GetArticleByUserId(Guid userId)
