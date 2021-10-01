@@ -3,7 +3,7 @@ namespace CmnSoftwareBackend.Entities.Dtos.CategoryAndArticleDtos
 {
     public class CategoryAndArticleAddDto
     {
-        public int CateogryId { get; set; }
+        public int CategoryId { get; set; }
         public int ArticleId { get; set; }
     }
 }

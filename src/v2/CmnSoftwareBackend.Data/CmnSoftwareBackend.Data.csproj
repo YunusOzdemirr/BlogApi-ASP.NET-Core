@@ -8,7 +8,6 @@
     <None Remove="Concrete\" />
     <None Remove="Concrete\EntityFramework\" />
     <None Remove="Concrete\EntityFramework\Contexts\" />
-    <None Remove="Concrete\EntityFramework\Mappings\" />
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Microsoft.EntityFrameworkCore" />
@@ -18,7 +17,6 @@
     <Folder Include="Concrete\" />
     <Folder Include="Concrete\EntityFramework\" />
     <Folder Include="Concrete\EntityFramework\Contexts\" />
-    <Folder Include="Concrete\EntityFramework\Mappings\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.8">
