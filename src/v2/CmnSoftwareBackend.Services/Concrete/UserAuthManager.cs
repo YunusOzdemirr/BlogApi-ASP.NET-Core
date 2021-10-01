@@ -66,7 +66,7 @@ namespace CmnSoftwareBackend.Services.Concrete
                     };
                     using (TransactionScope transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                     {
-                        //DbContext.Users.Update(user);
+                        DbContext.Users.Update(user);
                         await DbContext.UserTokens.AddAsync(userToken);
                         await DbContext.SaveChangesAsync();
                         transactionScope.Complete();
@@ -145,11 +145,11 @@ namespace CmnSoftwareBackend.Services.Concrete
             if (user == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(),
                     new Error("Lütfen E-Posta adresinizi veya Şifrenizi kontrol ediniz", "EmailAddress & Password"));
+
             if (HashingHelper.VerifyPasswordHash(userLoginDto.Password, user.PasswordHash, user.PasswordSalt))
             {
                 if (!user.IsActive)
-                    throw new NotFoundArgumentException(Messages.General.ValidationError(),
-                        new Error("Giriş  yapabilmek için hesabınızın aktif olması gereklidir", "IsActive"));
+                    throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Giriş  yapabilmek için hesabınızın aktif olması gereklidir", "IsActive"));
                 if (!user.IsEmailAddressVerified)
                     throw new NotFoundArgumentException(Messages.General.ValidationError(),
                         new Error("Giriş yapabilmeniz için e-posta adresinizi doğrulamanız gerekiyor.", "IsEmailAddressVerified"));

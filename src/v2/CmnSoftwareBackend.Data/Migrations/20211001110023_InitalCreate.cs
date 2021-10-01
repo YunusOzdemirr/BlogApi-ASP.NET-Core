@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CmnSoftwareBackend.Data.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitalCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -267,12 +267,12 @@ namespace CmnSoftwareBackend.Data.Migrations
                 name: "CategoryAndArticles",
                 columns: table => new
                 {
-                    CateogryId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     ArticleId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryAndArticles", x => new { x.CateogryId, x.ArticleId });
+                    table.PrimaryKey("PK_CategoryAndArticles", x => new { x.CategoryId, x.ArticleId });
                     table.ForeignKey(
                         name: "FK_CategoryAndArticles_Articles_ArticleId",
                         column: x => x.ArticleId,
@@ -280,8 +280,8 @@ namespace CmnSoftwareBackend.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_CategoryAndArticles_Categories_CateogryId",
-                        column: x => x.CateogryId,
+                        name: "FK_CategoryAndArticles_Categories_CategoryId",
+                        column: x => x.CategoryId,
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -352,12 +352,12 @@ namespace CmnSoftwareBackend.Data.Migrations
             migrationBuilder.InsertData(
                 table: "OperationClaims",
                 columns: new[] { "Id", "CreatedByUserId", "CreatedDate", "IsActive", "IsDeleted", "ModifiedByUserId", "ModifiedDate", "Name" },
-                values: new object[] { 1, null, new DateTime(2021, 9, 28, 15, 8, 12, 80, DateTimeKind.Local).AddTicks(2690), true, false, null, null, "Admin" });
+                values: new object[] { 1, null, new DateTime(2021, 10, 1, 14, 0, 22, 638, DateTimeKind.Local).AddTicks(3070), true, false, null, null, "Admin" });
 
             migrationBuilder.InsertData(
                 table: "OperationClaims",
                 columns: new[] { "Id", "CreatedByUserId", "CreatedDate", "IsActive", "IsDeleted", "ModifiedByUserId", "ModifiedDate", "Name" },
-                values: new object[] { 2, null, new DateTime(2021, 9, 28, 15, 8, 12, 91, DateTimeKind.Local).AddTicks(4150), true, false, null, null, "NormalUser" });
+                values: new object[] { 2, null, new DateTime(2021, 10, 1, 14, 0, 22, 644, DateTimeKind.Local).AddTicks(9580), true, false, null, null, "NormalUser" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_ArticlePictures_ArticleId",

@@ -177,13 +177,13 @@ namespace CmnSoftwareBackend.Data.Migrations
 
             modelBuilder.Entity("CmnSoftwareBackend.Entities.Concrete.CategoryAndArticle", b =>
                 {
-                    b.Property<int>("CateogryId")
+                    b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<int>("ArticleId")
                         .HasColumnType("int");
 
-                    b.HasKey("CateogryId", "ArticleId");
+                    b.HasKey("CategoryId", "ArticleId");
 
                     b.HasIndex("ArticleId");
 
@@ -361,7 +361,7 @@ namespace CmnSoftwareBackend.Data.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedDate = new DateTime(2021, 9, 28, 15, 8, 12, 80, DateTimeKind.Local).AddTicks(2690),
+                            CreatedDate = new DateTime(2021, 10, 1, 14, 0, 22, 638, DateTimeKind.Local).AddTicks(3070),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "Admin"
@@ -369,7 +369,7 @@ namespace CmnSoftwareBackend.Data.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedDate = new DateTime(2021, 9, 28, 15, 8, 12, 91, DateTimeKind.Local).AddTicks(4150),
+                            CreatedDate = new DateTime(2021, 10, 1, 14, 0, 22, 644, DateTimeKind.Local).AddTicks(9580),
                             IsActive = true,
                             IsDeleted = false,
                             Name = "NormalUser"
@@ -630,7 +630,7 @@ namespace CmnSoftwareBackend.Data.Migrations
 
                     b.HasOne("CmnSoftwareBackend.Entities.Concrete.Category", "Category")
                         .WithMany("CategoryAndArticles")
-                        .HasForeignKey("CateogryId")
+                        .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

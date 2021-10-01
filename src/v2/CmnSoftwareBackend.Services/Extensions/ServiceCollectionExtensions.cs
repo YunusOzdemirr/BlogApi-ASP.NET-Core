@@ -23,6 +23,7 @@ namespace CmnSoftwareBackend.Services.Extensions
             serviceCollection.AddScoped<IUserService, UserManager>();
             serviceCollection.AddScoped<IUserAuthService, UserAuthManager>();
             serviceCollection.AddScoped<IMailService, MailManager>();
+            serviceCollection.AddScoped<ICategoryAndArticleService, CategoryAndArticleManager>();
 
 
             return serviceCollection;
