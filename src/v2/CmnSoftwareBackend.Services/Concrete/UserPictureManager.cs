@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CmnSoftwareBackend.Data.Concrete.EntityFramework.Contexts;
 using CmnSoftwareBackend.Entities.ComplexTypes;
 using CmnSoftwareBackend.Entities.Concrete;
-using CmnSoftwareBackend.Entities.Dtos.UserPictureUpdateDtos;
+using CmnSoftwareBackend.Entities.Dtos.UserPictureDtos;
 using CmnSoftwareBackend.Services.Abstract;
 using CmnSoftwareBackend.Services.Utilities;
 using CmnSoftwareBackend.Shared.Entities.Concrete;
@@ -49,24 +50,68 @@ namespace CmnSoftwareBackend.Services.Concrete
             return new DataResult(ResultStatus.Success, picture);
         }
 
-        public Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy)
+        public async Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeUser)
         {
-            throw new NotImplementedException();
+            IQueryable<UserPicture> query = DbContext.Set<UserPicture>();
+            if (isActive.HasValue) query = query.AsNoTracking().Where(a => a.IsActive == isActive);
+            if (isDeleted.HasValue) query = query.AsNoTracking().Where(a => a.IsDeleted == isDeleted);
+            if (includeUser) query = query.AsNoTracking().Include(a => a.User);
+
+            pageSize = pageSize > 100 ? 100 : pageSize;
+            var totalCount =await query.AsNoTracking().CountAsync();
+            switch (orderBy)
+            {
+                case OrderBy.Id:
+                    query = isAscending ? query.OrderBy(a => a.Id) : query.OrderByDescending(a => a.Id);
+                    break;
+                default:
+                    query = isAscending ? query.OrderBy(a => a.CreatedDate) : query.OrderByDescending(a => a.CreatedDate);
+                    break;
+            }
+            return new DataResult(ResultStatus.Success, new UserPictureListDto
+            {
+                // Articles = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(a => Mapper.Map<Article>(a)).ToListAsync(),
+                UserPictures =await query.Take((currentPage - 1) * pageSize).Take(pageSize).Select(a => Mapper.Map<UserPicture>(a)).ToListAsync(),
+                IsAscending=isAscending,
+                CurrentPage=currentPage,
+                PageSize=pageSize,
+                TotalCount=totalCount
+            }); 
+          
         }
 
-        public Task<IDataResult> GetByIdAsync(int userPictureId)
+        public async Task<IDataResult> GetByIdAsync(int userPictureId)
         {
-            throw new NotImplementedException();
+            IQueryable<UserPicture> query = DbContext.Set<UserPicture>();
+            var userPicture = await query.AsNoTracking().Include(ab=>ab.User).SingleOrDefaultAsync(a => a.Id == userPictureId);
+            if (userPicture is null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı", "userPictureId"));
+
+            return new DataResult(ResultStatus.Success, query);
         }
 
-        public Task<IDataResult> HardDeleteAsync(int userPictureId)
+        public async Task<IDataResult> HardDeleteAsync(int userPictureId)
         {
-            throw new NotImplementedException();
+            var userPicture = DbContext.UserPictures.SingleOrDefaultAsync(a=>a.Id==userPictureId);
+            if (userPicture is null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir resim bulunamadı","userPictureId"));
+
+            DbContext.Remove(userPicture);
+            await DbContext.SaveChangesAsync();
+            return new DataResult(ResultStatus.Success, userPicture);
         }
 
-        public Task<IDataResult> UpdateAsync(UserPictureUpdateDto userPictureUpdateDto)
+        public async Task<IDataResult> UpdateAsync(UserPictureUpdateDto userPictureUpdateDto)
         {
-            throw new NotImplementedException();
+         
+            if (!await DbContext.UserPictures.AnyAsync(a => a.Id == userPictureUpdateDto.Id))
+                throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Böyle bir resim bulunamadı","id"));
+
+            var newUserPicture = Mapper.Map<UserPicture>(userPictureUpdateDto);
+            newUserPicture.ModifiedDate = DateTime.Now;
+            DbContext.UserPictures.Update(newUserPicture);
+            await DbContext.SaveChangesAsync();
+            return new DataResult(ResultStatus.Success, newUserPicture);
         }
     }
 }

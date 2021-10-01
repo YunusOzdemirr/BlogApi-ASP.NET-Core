@@ -2,13 +2,13 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace CmnSoftwareBackend.Entities.Dtos.UserPictureUpdateDtos
+namespace CmnSoftwareBackend.Entities.Dtos.UserPictureDtos
 {
     public class UserPictureUpdateDto
     {
         [DisplayName("Kullanıcının Resim Kodu")]
         [Required(ErrorMessage = "{0} alanı boş geçilemez.")]
-        public Guid Id { get; set; }
+        public int Id { get; set; }
 
         [DisplayName("Kullanıcı Kodu")]
         [Required(ErrorMessage = "{0} alanı boş geçilemez.")]

@@ -1,11 +1,11 @@
 ﻿using System;
 using CmnSoftwareBackend.Entities.Dtos.UserDtos;
 
-namespace CmnSoftwareBackend.Entities.Dtos.UserPictureUpdateDtos
+namespace CmnSoftwareBackend.Entities.Dtos.UserPictureDtos
 {
     public class UserPictureDto
     {
-        public Guid Id { get; set; }
+        public int Id { get; set; }
         public Guid UserId { get; set; }
         public UserDto User { get; set; }
         public string File { get; set; }
