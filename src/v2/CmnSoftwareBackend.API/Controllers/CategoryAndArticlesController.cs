@@ -19,6 +19,12 @@ namespace CmnSoftwareBackend.API.Controllers
     public class CategoryAndArticlesController : Controller
     {
         private readonly ICategoryAndArticleService _categoryAndArticleService;
+
+        public CategoryAndArticlesController(ICategoryAndArticleService categoryAndArticleService)
+        {
+            _categoryAndArticleService = categoryAndArticleService;
+        }
+
         [HttpPost]
         [Route("[action]")]
         public async Task<IActionResult> AddAsync(CategoryAndArticleAddDto categoryAndArticleAddDto)

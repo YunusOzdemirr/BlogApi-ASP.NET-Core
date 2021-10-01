@@ -25,27 +25,29 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> AddAsync(CategoryAndArticleAddDto categoryAndArticleAddDto)
         {
-            var category =await DbContext.Categories.SingleOrDefaultAsync(a=>a.Id== categoryAndArticleAddDto.CategoryId);
+            var category =await DbContext.Categories.AsNoTracking().Include(ab=>ab.CategoryAndArticles).SingleOrDefaultAsync(a=>a.Id== categoryAndArticleAddDto.CategoryId);
             if (category is null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori bulunmamakta","categoryId"));
 
-            var article = await DbContext.Articles.SingleOrDefaultAsync(a=>a.Id==categoryAndArticleAddDto.ArticleId);
+            var article = await DbContext.Articles.AsNoTracking().Include(ab=>ab.CategoryAndArticles).SingleOrDefaultAsync(a=>a.Id==categoryAndArticleAddDto.ArticleId);
             if (article is null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunmamakta", "articleId"));
-           
+            
             var categoryAndArticle = Mapper.Map<CategoryAndArticle>(categoryAndArticleAddDto);
             category.ModifiedDate = DateTime.Now;
             category.CategoryAndArticles.Add(categoryAndArticle);
             article.CategoryAndArticles.Add(categoryAndArticle);
             DbContext.CategoryAndArticles.Add(categoryAndArticle);
             await DbContext.SaveChangesAsync();
+            categoryAndArticle.Article = article;
+            categoryAndArticle.Category = category;
             return new DataResult(ResultStatus.Success,categoryAndArticle);
 
         }
 
         public async Task<IDataResult> HardDeleteAsync(CategoryAndArticlesUpdateDto categoryAndArticlesUpdateDto)
         {
-            var category =await DbContext.Categories.SingleOrDefaultAsync(a => a.Id == categoryAndArticlesUpdateDto.CateogryId);
+            var category =await DbContext.Categories.SingleOrDefaultAsync(a => a.Id == categoryAndArticlesUpdateDto.CategoryId);
             if (category is null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Böyle bir kategori bulunmamakta","categoryId"));
             var article = await DbContext.Articles.SingleOrDefaultAsync(a => a.Id == categoryAndArticlesUpdateDto.ArticleId);

@@ -27,7 +27,6 @@ namespace CmnSoftwareBackend.Data.Concrete.EntityFramework.Mappings
             builder.Property(c => c.IsDeleted).IsRequired();
             //wrong configure mapping
             //builder.HasOne<Article>(c => c.Article).WithMany(a => a.Categories).HasForeignKey(c => c.ArticleId);
-            builder.HasOne<Rank>(c => c.Rank).WithMany(r => r.Categories).HasForeignKey(c => c.RankId);
             builder.ToTable("Categories");
         }
     }
