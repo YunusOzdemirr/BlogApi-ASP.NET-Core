@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using CmnSoftwareBackend.Entities.ComplexTypes;
 using CmnSoftwareBackend.Entities.Dtos.UserNotificationDtos;
-using CmnSoftwareBackend.Entities.Dtos.UserPictureUpdateDtos;
+using CmnSoftwareBackend.Entities.Dtos.UserPictureDtos;
 
 namespace CmnSoftwareBackend.Entities.Dtos.UserDtos
 {

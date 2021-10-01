@@ -41,49 +41,46 @@ namespace CmnSoftwareBackend.Services.Concrete
             ValidationTool.Validate(new UserEmailActivateDtoValidator(), userEmailActivateDto);
 
             var user = await DbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.EmailAddress == userEmailActivateDto.EmailAddress);
-            if (user != null)
-            {
-                if (string.Equals(userEmailActivateDto.ActivationCode, user.VerificationCode))
-                {
-                    user.IsEmailAddressVerified = true;
-                    user.ModifiedDate = DateTime.Now;
-                    var accessToken = CreateAccessToken(user);
-                    user.LastLogin = DateTime.Now;
-                    UserToken userToken = new UserToken
-                    {
-                        UserId = user.Id,
-                        Token = accessToken.Token,
-                        TokenExpiration = accessToken.TokenExpiration,
-                        RefreshToken = accessToken.RefreshToken,
-                        RefreshTokenExpiration = accessToken.RefreshTokenExpiration,
-                        CreatedByUserId = user.Id,
-                        CreatedDate = DateTime.Now,
-                        ModifiedByUserId = null,
-                        ModifiedDate = null,
-                        IpAddress = userEmailActivateDto.IpAddress,
-                        IsActive = true,
-                        IsDeleted = false
-                    };
-                    using (TransactionScope transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
-                    {
-                        DbContext.Users.Update(user);
-                        await DbContext.UserTokens.AddAsync(userToken);
-                        await DbContext.SaveChangesAsync();
-                        transactionScope.Complete();
-                    }
-                    return new DataResult(ResultStatus.Success,
-                       $"{user.EmailAddress} e-posta adresi başarıyla onaylanmıştır.", new UserWithTokenDto
-                       {
-                           User = Mapper.Map<UserDto>(user),
-                           UserToken = Mapper.Map<AccessToken>(userToken)
-                       });
-                }
+            if (user == null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error($"{userEmailActivateDto.EmailAddress} e-posta adresine ait bir kullanıcı bulunamadı",
+               "EmailAddress"));
+            if (!string.Equals(userEmailActivateDto.ActivationCode, user.VerificationCode))
                 throw new NotFoundArgumentException(Messages.General.ValidationError(),
                     new Error($"{userEmailActivateDto.ActivationCode} numaralı aktivasyon kodu doğru değildir.", "ActivationCode"));
 
+            user.IsEmailAddressVerified = true;
+            user.ModifiedDate = DateTime.Now;
+            var accessToken = CreateAccessToken(user);
+            user.LastLogin = DateTime.Now;
+            UserToken userToken = new UserToken
+            {
+                UserId = user.Id,
+                Token = accessToken.Token,
+                TokenExpiration = accessToken.TokenExpiration,
+                RefreshToken = accessToken.RefreshToken,
+                RefreshTokenExpiration = accessToken.RefreshTokenExpiration,
+                CreatedByUserId = user.Id,
+                CreatedDate = DateTime.Now,
+                ModifiedByUserId = null,
+                ModifiedDate = null,
+                IpAddress = userEmailActivateDto.IpAddress,
+                IsActive = true,
+                IsDeleted = false
+            };
+            using (TransactionScope transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                DbContext.Users.Update(user);
+                await DbContext.UserTokens.AddAsync(userToken);
+                await DbContext.SaveChangesAsync();
+                transactionScope.Complete();
             }
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error($"{userEmailActivateDto.EmailAddress} e-posta adresine ait bir kullanıcı bulunamadı",
-                "EmailAddress"));
+            return new DataResult(ResultStatus.Success,
+               $"{user.EmailAddress} e-posta adresi başarıyla onaylanmıştır.", new UserWithTokenDto
+               {
+                   User = Mapper.Map<UserDto>(user),
+                   UserToken = Mapper.Map<AccessToken>(userToken)
+               });
+
         }
 
         public AccessToken CreateAccessToken(User user)
@@ -99,32 +96,31 @@ namespace CmnSoftwareBackend.Services.Concrete
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Mail adresi geçerli değil", "emailAddress"));
 
             var user = await DbContext.Users.FirstOrDefaultAsync(u => u.EmailAddress == emailAddress);
-            if (user != null)
-            {
-                //create random password
-                Random random = new Random();
-                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-                string newPassword = new string(Enumerable.Repeat(chars, 6)
-                    .Select(s => s[random.Next(s.Length)]).ToArray());
-                //user update
-                byte[] passwordHash, passwordSalt;
-                HashingHelper.CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
-                user.ModifiedDate = DateTime.Now;
-                DbContext.Update(user);
-                await DbContext.SaveChangesAsync();
-                //send new password to email
-                _mailService.SendEmaiL(new EmailSendDto
-                {
-                    EmailAdress = user.EmailAddress,
-                    Subject = "Şifremi Unuttum",
-                    Content = $"<h5>Hesabınızda Şifre Yenileme Aksiyonu!</h5><br/><h5>Yeni şifreniz: {newPassword} </h5>"
-                });
-                return new DataResult(ResultStatus.Success,
-                    $"{user.EmailAddress} e-posta adresine yeni şifreniz gönderilmiştir.", Mapper.Map<UserDto>(user));
-            }
+            if (user == null)
             throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir mail adresi bulunumamakta", "emailAddress"));
+
+            //create random password
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            string newPassword = new string(Enumerable.Repeat(chars, 6)
+                .Select(s => s[random.Next(s.Length)]).ToArray());
+            //user update
+            byte[] passwordHash, passwordSalt;
+            HashingHelper.CreatePasswordHash(newPassword, out passwordHash, out passwordSalt);
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+            user.ModifiedDate = DateTime.Now;
+            DbContext.Update(user);
+            await DbContext.SaveChangesAsync();
+            //send new password to email
+            _mailService.SendEmaiL(new EmailSendDto
+            {
+                EmailAdress = user.EmailAddress,
+                Subject = "Şifremi Unuttum",
+                Content = $"<h5>Hesabınızda Şifre Yenileme Aksiyonu!</h5><br/><h5>Yeni şifreniz: {newPassword} </h5>"
+            });
+            return new DataResult(ResultStatus.Success,
+                $"{user.EmailAddress} e-posta adresine yeni şifreniz gönderilmiştir.", Mapper.Map<UserDto>(user));
         }
 
         public IEnumerable<OperationClaim> GetClaims(User user)

@@ -33,7 +33,7 @@
     <Folder Include="Dtos\EmailDtos\" />
     <Folder Include="Dtos\OperationClaimDtos\" />
     <Folder Include="Dtos\UserNotificationDtos\" />
-    <Folder Include="Dtos\UserPictureUpdateDtos\" />
+    <Folder Include="Dtos\UserPictureDtos\" />
     <Folder Include="Dtos\UserOperationClaimDtos\" />
     <Folder Include="Dtos\CategoryDtos\" />
     <Folder Include="Dtos\LandingEmailDtos\" />

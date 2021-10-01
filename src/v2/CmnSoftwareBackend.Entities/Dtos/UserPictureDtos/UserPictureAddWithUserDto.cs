@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace CmnSoftwareBackend.Entities.Dtos.UserPictureUpdateDtos
+namespace CmnSoftwareBackend.Entities.Dtos.UserPictureDtos
 {
     public class UserPictureAddWithUserDto
     {
