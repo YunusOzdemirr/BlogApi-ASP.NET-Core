@@ -8,6 +8,7 @@ using CmnSoftwareBackend.Shared.Entities.ComplexTypes;
 using CmnSoftwareBackend.Shared.Entities.Concrete;
 using CmnSoftwareBackend.Shared.Utilities.Results.ComplexTypes;
 using CmnSoftwareBackend.Shared.Utilities.Results.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,6 +17,7 @@ namespace CmnSoftwareBackend.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin")]
     public class UserOperationClaimsController : Controller
     {
         private readonly IUserOperationClaimService _userOperationClaimService;
@@ -45,7 +47,6 @@ namespace CmnSoftwareBackend.API.Controllers
         {
             var addResult = await _userOperationClaimService.AddAsync(userOperationClaimAddDto);
             return Ok(new SuccessDataApiResult(addResult, Url.Link("", new { Controller = "UserOperationClaims", Action = "AddAsync" })));
-
         }
         [HttpPost]
         [ProducesResponseType(200)]
