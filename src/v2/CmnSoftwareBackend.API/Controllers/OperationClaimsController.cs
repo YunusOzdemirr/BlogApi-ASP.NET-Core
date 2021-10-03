@@ -17,8 +17,9 @@ namespace CmnSoftwareBackend.API.Controllers
 {
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
+    [ProducesResponseType(200)]
     [Route("api/[controller]")]
-   
+    [Authorize(Roles = "Admin")]
     [ApiController]
     public class OperationClaimsController : Controller
     {
@@ -30,7 +31,6 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200)]
         [Route("[action]")]
         public async Task<IActionResult> GetAll(bool isActive = true, bool isDeleted = false, bool isAscending = false)
         {
@@ -39,16 +39,14 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200)]
         [Route("[action]")]
         public async Task<IActionResult> GetById(int operationClaimId)
         {
             var getResult = await _operationClaimService.GetByIdAsync(operationClaimId);
-            return Ok(new SuccessDataApiResult(getResult,Url.Link("",new {Controller="OperationClaims",Action="GetAll" })));
+            return Ok(new SuccessDataApiResult(getResult, Url.Link("", new { Controller = "OperationClaims", Action = "GetAll" })));
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
         [Route("[action]")]
         public async Task<IActionResult> Add(OperationClaimAddDto operationClaimAddDto)
         {
@@ -58,9 +56,6 @@ namespace CmnSoftwareBackend.API.Controllers
 
 
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> Update(OperationClaimUpdateDto operationClaimUpdateDto)
         {
@@ -70,9 +65,6 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> Delete(int operationClaimId)
         {
@@ -81,9 +73,6 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> HardDelete(int operationClaimId)
         {

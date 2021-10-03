@@ -17,6 +17,7 @@ namespace CmnSoftwareBackend.API.Controllers
 {
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
+    [ProducesResponseType(200)]
     [Route("api/v1/[controller]")]
     [ApiController]
     public class UsersAuthController : ControllerBase
@@ -31,7 +32,6 @@ namespace CmnSoftwareBackend.API.Controllers
 
         //REGISTER tested
         [HttpPost]
-        [ProducesResponseType(200)]
         [Route("[action]")]
         public async Task<IActionResult> Register(UserRegisterDto userRegisterDto)
         {
@@ -62,7 +62,6 @@ namespace CmnSoftwareBackend.API.Controllers
 
         //RESEND ACTIVATION CODE tested
         [HttpPost]
-        [ProducesResponseType(200)]
         [ProducesResponseType(typeof(SuccessDataApiResult), StatusCodes.Status200OK)]
         [Route("[action]")]
         public async Task<IActionResult> ReSendActivationCode(string emailAddress)
@@ -74,9 +73,6 @@ namespace CmnSoftwareBackend.API.Controllers
 
         //FORGOT PASSWORD tested
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> ForgotPassword(string emailAddress)
         {
