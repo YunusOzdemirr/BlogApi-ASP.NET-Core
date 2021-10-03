@@ -103,7 +103,6 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         public async Task<IDataResult> UpdateAsync(UserPictureUpdateDto userPictureUpdateDto)
         {
-         
             if (!await DbContext.UserPictures.AnyAsync(a => a.Id == userPictureUpdateDto.Id))
                 throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Böyle bir resim bulunamadı","id"));
 
