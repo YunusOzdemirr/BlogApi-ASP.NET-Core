@@ -17,7 +17,6 @@ namespace CmnSoftwareBackend.API.Controllers
 {
     [Route("api/v1/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin")]
     public class UserOperationClaimsController : Controller
     {
         private readonly IUserOperationClaimService _userOperationClaimService;

@@ -18,7 +18,7 @@ namespace CmnSoftwareBackend.API.Controllers
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
+   
     [ApiController]
     public class OperationClaimsController : Controller
     {

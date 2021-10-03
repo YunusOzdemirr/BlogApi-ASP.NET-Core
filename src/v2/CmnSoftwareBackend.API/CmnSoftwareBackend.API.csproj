@@ -21,6 +21,7 @@
     <None Remove="Hangfire.Core" />
     <None Remove="Hangfire.SqlServer" />
     <None Remove="Hangfire.AspNetCore" />
+    <None Remove="Microsoft.AspNetCore.Identity.EntityFrameworkCore" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
@@ -40,6 +41,7 @@
     <PackageReference Include="Hangfire.Core" Version="1.7.25" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.7.25" />
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.25" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.10" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CmnSoftwareBackend.Entities\CmnSoftwareBackend.Entities.csproj">

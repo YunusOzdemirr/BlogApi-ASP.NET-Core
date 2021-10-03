@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CmnSoftwareBackend.API.Filters;
 using CmnSoftwareBackend.API.Middleware;
+using CmnSoftwareBackend.Data.Concrete.EntityFramework.Contexts;
 using CmnSoftwareBackend.Entities.Concrete;
 using CmnSoftwareBackend.Services.AutoMapper.Profiles;
 using CmnSoftwareBackend.Services.Extensions;
@@ -12,13 +14,17 @@ using CmnSoftwareBackend.Shared.Utilities.Security.Jwt;
 using Hangfire;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -52,6 +58,8 @@ namespace CmnSoftwareBackend.API
             {
                 options.Filters.Add<ValidationFilter>();
                 options.Filters.Add<JsonExceptionFilter>();
+                // var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                //options.Filters.Add(new AuthorizeFilter(policy));
             }).AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ContractResolver = new DefaultContractResolver();
@@ -104,7 +112,7 @@ namespace CmnSoftwareBackend.API
                     }
                 });
             });
-            var tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+            var tokenOptions = Configuration.GetSection("TokenOptions").Get<Shared.Utilities.Security.Jwt.TokenOptions>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
@@ -120,6 +128,15 @@ namespace CmnSoftwareBackend.API
                         IssuerSigningKey = SecurityKeyHelper.CreateSecurityKey(tokenOptions.SecurityKey)
                     };
                 });
+            //Authorize Role
+            services.AddIdentityCore<IdentityUser>()
+                            .AddEntityFrameworkStores<CmnDbContext>()
+                            .AddDefaultTokenProviders();
+
+            services.AddAuthorization(options =>
+            options.AddPolicy("Role",
+                policy => policy.RequireClaim(claimType: ClaimTypes.Role, "Admin","NormalUser")));
+
 
             services.AddHangfire(configuration => configuration
                         .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)

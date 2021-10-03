@@ -17,7 +17,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace CmnSoftwareBackend.API.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
     [ApiController]
     public class CategoriesController : Controller
     {
@@ -44,6 +43,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         [Route("[action]")]
+        [Authorize(Roles = "NormalUser")]
         public async Task<IActionResult> GetByIdAsync(int categoryId)
         {
             var getByIdResult = await _categoryService.GetByIdAsync(categoryId);
@@ -56,6 +56,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddAsync(CategoryAddDto categoryAddDto)
         {
             var addResult = await _categoryService.AddAsync(categoryAddDto);

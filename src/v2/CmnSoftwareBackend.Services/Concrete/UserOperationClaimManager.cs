@@ -49,6 +49,16 @@ namespace CmnSoftwareBackend.Services.Concrete
             ValidationTool.Validate(new UserOperationClaimAddDtoValidator(), userOperationClaimAddDto);
 
             var userOperationClaim = Mapper.Map<UserOperationClaim>(userOperationClaimAddDto);
+
+
+
+                userOperationClaim.OperationClaim = await DbContext.OperationClaims.SingleOrDefaultAsync(a => a.Id == userOperationClaimAddDto.OperationClaimId);
+            if (userOperationClaim.OperationClaim is null)
+                throw new NotFoundArgumentException("Böyle bir yetki bulunamadı",new Error());
+            userOperationClaim.User = await DbContext.Users.SingleOrDefaultAsync(a => a.Id == userOperationClaimAddDto.UserId);
+            if (userOperationClaim.User is null)
+                throw new NotFoundArgumentException("Böyle bir yetki bulunamadı", new Error());
+
             await DbContext.UserOperationClaims.AddAsync(userOperationClaim);
             await DbContext.SaveChangesAsync();
             var operationClaims = await DbContext.OperationClaims
@@ -65,17 +75,19 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> UpdateAsync(UserOperationClaimUpdateDto userOperationClaimUpdateDto)
         {
             ValidationTool.Validate(new UserOperationClaimUpdateDtoValidator(), userOperationClaimUpdateDto);
+            
 
-
-            var userOperatinoClaim = Mapper.Map<UserOperationClaim>(userOperationClaimUpdateDto);
-            DbContext.UserOperationClaims.Update(userOperatinoClaim);
+            var userOperationClaim = Mapper.Map<UserOperationClaim>(userOperationClaimUpdateDto);
+            userOperationClaim.OperationClaim =await DbContext.OperationClaims.SingleOrDefaultAsync(a => a.Id == userOperationClaimUpdateDto.OperationClaimId);
+            userOperationClaim.User = await DbContext.Users.SingleOrDefaultAsync(a => a.Id == userOperationClaim.UserId);
+            DbContext.UserOperationClaims.Update(userOperationClaim);
             await DbContext.SaveChangesAsync();
             var operationClaims = await DbContext.OperationClaims.Where(oc =>
                 oc.UserOperationClaims.Any(uoc => uoc.UserId == userOperationClaimUpdateDto.UserId)).ToListAsync();
             return new DataResult(ResultStatus.Success,
-                $"{userOperatinoClaim.User.UserName} yetkisi güncelleştirildi.", new UserOperationClaimDto()
+                $"{userOperationClaim.User.UserName} yetkisi güncelleştirildi.", new UserOperationClaimDto()
                 {
-                    UserId = userOperatinoClaim.UserId,
+                    UserId = userOperationClaim.UserId,
                     OperationClaims = operationClaims
                 });
         }
