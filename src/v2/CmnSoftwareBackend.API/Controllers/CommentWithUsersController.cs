@@ -6,6 +6,7 @@ using CmnSoftwareBackend.Entities.ComplexTypes;
 using CmnSoftwareBackend.Entities.Dtos.CommentWithUserDtos;
 using CmnSoftwareBackend.Services.Abstract;
 using CmnSoftwareBackend.Shared.Utilities.Results.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,6 +16,7 @@ namespace CmnSoftwareBackend.API.Controllers
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
+    [Authorize]
     [Route("api/[controller]")]
     public class CommentWithUsersController : Controller
     {
@@ -33,6 +35,7 @@ namespace CmnSoftwareBackend.API.Controllers
         }
         [HttpGet]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetByIdAsync(int commentWithUserId, bool includeArticle,bool includeUser)
         {
             var result = await _commentWithUserService.GetByIdAsync(commentWithUserId, includeArticle,includeUser);
@@ -54,6 +57,7 @@ namespace CmnSoftwareBackend.API.Controllers
         }
         [HttpGet]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetCommentByUserId(Guid userId, bool includeArticle)
         {
             var result =await _commentWithUserService.GetAllCommentByUserId(userId, includeArticle);
@@ -68,6 +72,7 @@ namespace CmnSoftwareBackend.API.Controllers
         }
         [HttpPost]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> HardDeleteAsync(int commentId)
         {
             var result = await _commentWithUserService.HardDeleteAsync(commentId);

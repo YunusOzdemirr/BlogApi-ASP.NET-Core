@@ -9,6 +9,7 @@ using CmnSoftwareBackend.Shared.Entities.ComplexTypes;
 using CmnSoftwareBackend.Shared.Entities.Concrete;
 using CmnSoftwareBackend.Shared.Utilities.Results.ComplexTypes;
 using CmnSoftwareBackend.Shared.Utilities.Results.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -19,6 +20,7 @@ namespace CmnSoftwareBackend.API.Controllers
     [ProducesResponseType(500)]
     [Route("api/v1/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class EmailsController : ControllerBase
     {
         private readonly IMailService _mailService;

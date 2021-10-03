@@ -6,6 +6,7 @@ using CmnSoftwareBackend.Entities.ComplexTypes;
 using CmnSoftwareBackend.Entities.Dtos.ArticlePictureDtos;
 using CmnSoftwareBackend.Services.Abstract;
 using CmnSoftwareBackend.Shared.Utilities.Results.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,6 +16,7 @@ namespace CmnSoftwareBackend.API.Controllers
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ArticlePictureController : Controller
     {
@@ -28,6 +30,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetById(int articlePictureId, bool includeArticle)
         {
             var getById = await _articlePictureService.GetByIdAsync(articlePictureId, includeArticle);
@@ -36,6 +39,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetArticlePictureByArticleId(int articleId)
         {
             var article = await _articlePictureService.GetArticlePictureByArticleId(articleId);
@@ -44,6 +48,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticle)
         {
             var getAll = await _articlePictureService.GetAllAsync(isActive, isActive, isAscending, currentPage, pageSize, orderBy, includeArticle);
@@ -77,6 +82,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> HardDeleteAsync(int articlePictureId)
         {
             var hardDeleteResult = await _articlePictureService.HardDeleteAsync(articlePictureId);

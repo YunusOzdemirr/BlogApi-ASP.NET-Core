@@ -6,6 +6,7 @@ using CmnSoftwareBackend.Entities.ComplexTypes;
 using CmnSoftwareBackend.Entities.Dtos.ArticleDtos;
 using CmnSoftwareBackend.Services.Abstract;
 using CmnSoftwareBackend.Shared.Utilities.Results.Concrete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -15,6 +16,7 @@ namespace CmnSoftwareBackend.API.Controllers
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
     [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
     public class ArticlesController : Controller
     {
@@ -36,6 +38,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetById(int articleId, bool includeArticlePicture, bool commentWithUser ,bool commentWithoutUser)
         {
             var result = await _articleService.GetByIdAsync(articleId, includeArticlePicture, commentWithUser, commentWithoutUser);
@@ -44,6 +47,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetArticleByCommentWithoutUserId(int commentWithoutUserId)
         {
             var result = await _articleService.GetArticleByCommentWithoutUserIdAsync(commentWithoutUserId);
@@ -52,6 +56,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetArticleByCommentWithUserId(int commentWithUserId)
         {
             var result = await _articleService.GetArticleByCommentWithUserIdAsync(commentWithUserId);
@@ -60,6 +65,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetArticleByUserId(Guid userId)
         {
             var article = await _articleService.GetArticleByUserId(userId);
@@ -68,6 +74,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [HttpGet]
         [ProducesResponseType(200)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetArticleByArticlePictureId(int ArticlePictureId)
         {
             var articles = await _articleService.GetArticleByArticlePictureId(ArticlePictureId);
@@ -107,6 +114,7 @@ namespace CmnSoftwareBackend.API.Controllers
         [ProducesResponseType(400)]
         [ProducesResponseType(500)]
         [Route("[action]")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> HardDeleteAsync(int articleId)
         {
             var result = await _articleService.HardDeleteAsync(articleId);
