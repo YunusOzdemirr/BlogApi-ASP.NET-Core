@@ -15,7 +15,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CmnSoftwareBackend.API.Controllers
 {
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
     [Route("api/v1/[controller]")]
+    [Authorize(Roles = "Admin")]
     [ApiController]
     public class UserOperationClaimsController : Controller
     {
@@ -27,9 +31,7 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
+       
         [Route("[action]")]
         public async Task<IActionResult> GetAllByUserIdAsync(Guid userId)
         {
@@ -38,9 +40,6 @@ namespace CmnSoftwareBackend.API.Controllers
             
         }
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> AddAsync(UserOperationClaimAddDto userOperationClaimAddDto)
         {
@@ -48,9 +47,6 @@ namespace CmnSoftwareBackend.API.Controllers
             return Ok(new SuccessDataApiResult(addResult, Url.Link("", new { Controller = "UserOperationClaims", Action = "AddAsync" })));
         }
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> UpdateAsync(UserOperationClaimUpdateDto userOperationClaimUpdateDto)
         {
@@ -59,9 +55,6 @@ namespace CmnSoftwareBackend.API.Controllers
 
         }
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> DeleteAsync(UserOperationClaimDeleteDto userOperationClaimDeleteDto)
         {

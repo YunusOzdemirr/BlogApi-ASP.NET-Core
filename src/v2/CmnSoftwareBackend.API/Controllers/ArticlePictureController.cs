@@ -15,6 +15,7 @@ namespace CmnSoftwareBackend.API.Controllers
 {
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
+    [ProducesResponseType(200)]
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
@@ -28,35 +29,27 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200)]
         [Route("[action]")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetById(int articlePictureId, bool includeArticle)
         {
             var getById = await _articlePictureService.GetByIdAsync(articlePictureId, includeArticle);
             return Ok(new SuccessDataApiResult(getById, Url.Link("", new { Controller = "ArticlePictures", Action = "GetById" })));
         }
         [HttpGet]
-        [ProducesResponseType(200)]
         [Route("[action]")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetArticlePictureByArticleId(int articleId)
         {
             var article = await _articlePictureService.GetArticlePictureByArticleId(articleId);
             return Ok(new SuccessDataApiResult(article, Url.Link("", new { Controller = "ArticlePictures", Action = "GetArticlePictureByArticleId" })));
         }
         [HttpGet]
-        [ProducesResponseType(200)]
         [Route("[action]")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticle)
         {
             var getAll = await _articlePictureService.GetAllAsync(isActive, isActive, isAscending, currentPage, pageSize, orderBy, includeArticle);
             return Ok(new SuccessDataApiResult(getAll, Url.Link("", new { Controller = "ArticlePictures", Action = "GetAll" })));
         }
         [HttpPost]
-        [ProducesResponseType(200)]
-       
         [Route("[action]")]
         public async Task<IActionResult> AddAsync(ArticlePictureAddDto articlePictureAddDto)
         {
@@ -64,7 +57,6 @@ namespace CmnSoftwareBackend.API.Controllers
             return Ok(new SuccessDataApiResult(addResult, Url.Link("", new { Controller = "ArticlePictures", Action = "Add" })));
         }
         [HttpPost]
-        [ProducesResponseType(200)]
         [Route("[action]")]
         public async Task<IActionResult> DeleteAsync(int articlePictureId, Guid CreatedByUserId)
         {
@@ -72,7 +64,6 @@ namespace CmnSoftwareBackend.API.Controllers
             return Ok(new SuccessDataApiResult(deleteResult, Url.Link("", new { Controller = "ArticlePictures", Action = "Delete" })));
         }
         [HttpPost]
-        [ProducesResponseType(200)]
         [Route("[action]")]
         public async Task<IActionResult> UpdateAsync(ArticlePictureUpdateDto articlePictureUpdateDto)
         {
@@ -80,7 +71,6 @@ namespace CmnSoftwareBackend.API.Controllers
             return Ok(new SuccessDataApiResult(updateResult, Url.Link("", new { Controller = "ArticlePictures", Action = "Update" })));
         }
         [HttpPost]
-        [ProducesResponseType(200)]
         [Route("[action]")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> HardDeleteAsync(int articlePictureId)

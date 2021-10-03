@@ -18,6 +18,10 @@ namespace CmnSoftwareBackend.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    [Authorize(Roles = "Admin")]
     public class CategoriesController : Controller
     {
         private readonly ICategoryService _categoryService;
@@ -28,9 +32,7 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
+      
         [Route("[action]")]
         public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending = false, int currentPage = 1, int pageSize = 20, OrderBy orderBy = OrderBy.CreatedDate)
         {
@@ -39,11 +41,7 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
-        [Authorize(Roles = "NormalUser")]
         public async Task<IActionResult> GetByIdAsync(int categoryId)
         {
             var getByIdResult = await _categoryService.GetByIdAsync(categoryId);
@@ -52,11 +50,7 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddAsync(CategoryAddDto categoryAddDto)
         {
             var addResult = await _categoryService.AddAsync(categoryAddDto);
@@ -64,9 +58,6 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> UpdateAsync(CategoryUpdateDto categoryUpdateDto)
         {
@@ -75,9 +66,6 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> DeleteAsync(int categoryId)
         {
@@ -85,9 +73,6 @@ namespace CmnSoftwareBackend.API.Controllers
             return Ok(new SuccessDataApiResult(deleteResult, Url.Link("", new { Controller = "Categories", Action = "DeleteAsync" })));
         }
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public async Task<IActionResult> HardDeleteAsync(int categoryId)
         {

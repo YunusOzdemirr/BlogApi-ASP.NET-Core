@@ -18,6 +18,7 @@ namespace CmnSoftwareBackend.API.Controllers
 {
     [ProducesResponseType(400)]
     [ProducesResponseType(500)]
+    [ProducesResponseType(200)]
     [Route("api/v1/[controller]")]
     [ApiController]
     [Authorize(Roles = "Admin")]
@@ -30,7 +31,6 @@ namespace CmnSoftwareBackend.API.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(200)]
         
         [Route("[action]")]
         public IActionResult SendEmail(EmailSendDto emailSendDto)
@@ -39,9 +39,6 @@ namespace CmnSoftwareBackend.API.Controllers
             return Ok(new SuccessApiResult(emailSentResult, Url.Link("", new { Controller = "Emails", Action = "SendEmail" })));
         }
         [HttpPost]
-        [ProducesResponseType(200)]
-        [ProducesResponseType(400)]
-        [ProducesResponseType(500)]
         [Route("[action]")]
         public IActionResult SendLandingEmail(LandingEmailDto landingEmailDto)
         {

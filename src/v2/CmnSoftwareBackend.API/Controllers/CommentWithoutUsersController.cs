@@ -28,7 +28,6 @@ namespace CmnSoftwareBackend.API.Controllers
         }
         [HttpGet]
         [Route("[action]")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy, bool includeArticle)
         {
             var result = await _commentWithoutUserService.GetAllAsync(isActive, isDeleted, isAscending, currentPage, pageSize, orderBy, includeArticle);
@@ -36,7 +35,6 @@ namespace CmnSoftwareBackend.API.Controllers
         }
         [HttpGet]
         [Route("[action]")]
-        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetByIdAsync(int commentWithoutUserId, bool includeArticle)
         {
             var result = await _commentWithoutUserService.GetByIdAsync(commentWithoutUserId, includeArticle);
