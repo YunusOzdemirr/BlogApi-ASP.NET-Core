@@ -155,7 +155,7 @@ namespace CmnSoftwareBackend.API
             services.LoadMyServices();
             services.AddAutoMapper(typeof(CategoryProfile), typeof(UserProfile), typeof(OperationClaimProfile), typeof(UserNotificationProfile), typeof(UserTokenProfile), typeof(ArticleProfile), typeof(CommentWithUserProfile),typeof(CommentWithoutUserProfile),typeof(ArticlePictureProfile));
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
-            services.Configure<AccessTokenOptions>(Configuration.GetSection("AccessTokenOptions"));
+            services.Configure<Shared.Utilities.Security.Jwt.TokenOptions>(Configuration.GetSection("TokenOptions"));
             services.AddLogging();
         }
 

@@ -16,28 +16,28 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace CmnSoftwareBackend.Services.Concrete
 {
-    public class JwtHelper : IJwtHelper
+    public class JwtHelper2 : IJwtHelper
     {
-        public IConfiguration Configuration { get; }
+        // public IConfiguration Configuration { get; }
         private TokenOptions _tokenOptions;
         private DateTime _accessTokenExpiration;
         private DateTime _refreshTokenExpiration;
 
-        public JwtHelper(IConfiguration configuration)
+        public JwtHelper2(IConfiguration configuration)
         {
-            Configuration = configuration;
-            _tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
+            //   Configuration = configuration;
+            //_tokenOptions = Configuration.GetSection("TokenOptions").Get<TokenOptions>();
         }
         public AccessToken CreateToken(User user, IEnumerable<OperationClaim> operationClaims)
         {
-            _accessTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration);
+            _accessTokenExpiration = DateTime.Now.AddMinutes(15);
             var securityKey = SecurityKeyHelper.CreateSecurityKey(_tokenOptions.SecurityKey);
             var signingCredentials = SigningCredentialsHelper.CreateSigningCredentials(securityKey);
             var jwt = CreateJwtSecurityToken(_tokenOptions, user, signingCredentials, operationClaims);
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             var token = jwtSecurityTokenHandler.WriteToken(jwt);
             //RefreshToken
-            _refreshTokenExpiration = DateTime.Now.AddMinutes(_tokenOptions.AccessTokenExpiration+100);
+            _refreshTokenExpiration = DateTime.Now.AddMinutes(30);
             var jwtRefresh = CreateJwtRefreshToken(_tokenOptions, user, signingCredentials, operationClaims);
             var refreshToken = jwtSecurityTokenHandler.WriteToken(jwtRefresh);
             return new AccessToken

@@ -27,6 +27,8 @@
     <None Remove="System.IdentityModel.Tokens.Jwt" />
     <None Remove="DiscordRichPresence" />
     <None Remove="Utilities\Exceptions\" />
+    <None Remove="Microsoft.Extensions.Configuration" />
+    <None Remove="Microsoft.Extensions.Configuration.Binder" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Entities\" />
@@ -49,9 +51,11 @@
     <Folder Include="Utilities\Exceptions\" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="10.3.0" />
-    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.12.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.12.0" />
+    <PackageReference Include="FluentValidation" Version="10.3.3" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.12.2" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.12.2" />
     <PackageReference Include="DiscordRichPresence" Version="1.0.175" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
   </ItemGroup>
 </Project>
