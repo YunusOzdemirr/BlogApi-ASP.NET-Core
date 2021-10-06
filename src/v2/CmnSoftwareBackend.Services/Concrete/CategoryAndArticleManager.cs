@@ -68,7 +68,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             }
             return new DataResult(ResultStatus.Success, new CategoryAndArticleListDto
             {
-                CategoryAndArticles = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(a => Mapper.Map<CategoryAndArticleDto>(a)).ToListAsync(),
+                CategoryAndArticles = await query.Skip((currentPage - 1) * pageSize).Take(pageSize).Select(a => Mapper.Map<CategoryAndArticle>(a)).ToListAsync(),
                 CurrentPage = currentPage,
                 TotalCount = count,
                 IsAscending = isAscending,
@@ -79,16 +79,20 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> GetArticleByCategoryId(int categoryId)
         {
             IQueryable<CategoryAndArticle> query = DbContext.Set<CategoryAndArticle>();
-            var category = await query.AsNoTracking().Include(a => a.Article).SingleOrDefaultAsync(a => a.CategoryId == categoryId);
+            var category = query.AsNoTracking().Include(a => a.Article).Where(a => a.CategoryId == categoryId);
             if (category is null)
-                throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Böyle bir kategori bulunamadı","categoryId"));
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kategori bulunamadı", "categoryId"));
             return new DataResult(ResultStatus.Success, category);
-            
+
         }
 
-        public Task<IDataResult> GetCategoryByArticleId(int articleId)
+        public async Task<IDataResult> GetCategoryByArticleId(int articleId)
         {
-           IQueryable<CategoryAndArticle>
+            IQueryable<CategoryAndArticle> query = DbContext.Set<CategoryAndArticle>();
+            var article = query.AsNoTracking().Include(a => a.Category).Where(a => a.ArticleId == articleId);
+            if (article is null)
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir makale bulunamadı", "articleId"));
+            return new DataResult(ResultStatus.Success, article);
         }
 
         public async Task<IDataResult> HardDeleteAsync(CategoryAndArticlesUpdateDto categoryAndArticlesUpdateDto)
