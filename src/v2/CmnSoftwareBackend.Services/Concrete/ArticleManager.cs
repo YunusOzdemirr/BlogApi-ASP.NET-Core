@@ -26,7 +26,7 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> AddAsync(ArticleAddDto articleAddDto)
         {
             var user = await DbContext.Users.AsNoTracking().SingleOrDefaultAsync(u => u.Id == articleAddDto.UserId);
-            if (user == null)
+            if (user is null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir kullanıcı bulunamadı", "UserId"));
             if (await DbContext.Articles.AsNoTracking().AnyAsync(a => a.Title == articleAddDto.Title))
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale başlığı daha önceden kullanılmış biraz özgün olabilirsin :)", "Title"));
@@ -41,7 +41,7 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> DeleteAsync(int articleId, Guid CreatedByUserId)
         {
             var article = await DbContext.Articles.AsNoTracking().FirstOrDefaultAsync(a => a.Id == articleId);
-            if (article == null)
+            if (article is null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir article mevcut değil", "Id"));
             if (article.CreatedByUserId != CreatedByUserId)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu makale size ait değil.", "InvalidUser"));

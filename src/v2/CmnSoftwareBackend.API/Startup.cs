@@ -58,7 +58,7 @@ namespace CmnSoftwareBackend.API
             {
                 options.Filters.Add<ValidationFilter>();
                 options.Filters.Add<JsonExceptionFilter>();
-                // var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                // var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedLoUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
             }).AddNewtonsoftJson(options =>
             {
@@ -137,7 +137,7 @@ namespace CmnSoftwareBackend.API
             options.AddPolicy("Role",
                 policy => policy.RequireClaim(claimType: ClaimTypes.Role, "Admin","NormalUser")));
 
-
+            //Hangfire
             services.AddHangfire(configuration => configuration
                         .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                         .UseSimpleAssemblyNameTypeSerializer()
