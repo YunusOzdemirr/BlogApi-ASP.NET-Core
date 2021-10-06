@@ -12,7 +12,7 @@ namespace CmnSoftwareBackend.Services.Extensions
         public static IServiceCollection LoadMyServices(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddDbContext<CmnDbContext>();
-            serviceCollection.AddSingleton<IJwtHelper, JwtHelper2>();
+            serviceCollection.AddSingleton<IJwtHelper, JwtHelper>();
             serviceCollection.AddScoped<ICategoryService, CategoryManager>();
             serviceCollection.AddScoped<IOperationClaimService, OperationClaimManager>();
             serviceCollection.AddScoped<IUserOperationClaimService, UserOperationClaimManager>();
