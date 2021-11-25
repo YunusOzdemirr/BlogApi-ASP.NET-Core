@@ -6,10 +6,6 @@ namespace CmnSoftwareBackend.Entities.Concrete
 {
     public class Article : EntityBase<int>, IEntity
     {
-        public Article()
-        {
-            CreatedByUserId = UserId;
-        }
         public string UserName { get; set; }
         public string Title { get; set; }
         public string Content { get; set; }
@@ -26,6 +22,9 @@ namespace CmnSoftwareBackend.Entities.Concrete
         public ICollection<CategoryAndArticle> CategoryAndArticles { get; set; }
         public ICollection<CommentWithUser> CommentWithUsers { get; set; }
         public ICollection<CommentWithoutUser> CommentWithoutUsers { get; set; }
-
+            public Article()
+        {
+            CreatedByUserId = UserId;
+        }
     }
 }

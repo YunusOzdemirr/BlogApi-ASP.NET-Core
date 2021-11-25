@@ -15,7 +15,7 @@ namespace CmnSoftwareBackend.Data.Concrete.EntityFramework.Contexts
         public DbSet<UserNotification> UserNotifications { get; set; }
         public DbSet<UserPicture> UserPictures { get; set; }
         public DbSet<Log> Logs { get; set; }
-        public DbSet<Article >Articles { get; set; }
+        public DbSet<Article> Articles { get; set; }
         public DbSet<CommentWithoutUser> CommentWithoutUsers{ get; set; }
         public DbSet<CommentWithUser> CommentWithUsers{ get; set; }
         public DbSet<ArticlePicture> ArticlePictures{ get; set; }
@@ -24,7 +24,7 @@ namespace CmnSoftwareBackend.Data.Concrete.EntityFramework.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+
             modelBuilder.ApplyConfiguration(new CategoryMap());
             modelBuilder.ApplyConfiguration(new OperationClaimMap());
             modelBuilder.ApplyConfiguration(new UserMap());

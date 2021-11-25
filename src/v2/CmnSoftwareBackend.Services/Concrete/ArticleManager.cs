@@ -108,9 +108,9 @@ namespace CmnSoftwareBackend.Services.Concrete
         public async Task<IDataResult> GetArticleByCommentWithUserIdAsync(int commentWithUserId)
         {
             IQueryable<Article> query = DbContext.Set<Article>();
-            var comment = query.AsNoTracking().Where(a => a.CommentWithUsers.Any(a=>a.Id == commentWithUserId));
+            var comment = query.AsNoTracking().Where(a => a.CommentWithUsers.Any(a => a.Id == commentWithUserId));
             if (comment is null)
-                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu kullanıcı Id'sine ait bir yorum bulunamadı","commentWithUserId"));
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Bu kullanıcı Id'sine ait bir yorum bulunamadı", "commentWithUserId"));
             return new DataResult(ResultStatus.Success, query);
         }
 
