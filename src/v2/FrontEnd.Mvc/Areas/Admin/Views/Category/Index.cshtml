@@ -7,6 +7,7 @@
 }
 @if (Model.Categories != null)
 {
+    <div id="modalPlaceHolder" aria-hidden="true"></div>
     <div class="card mb-4 mt-2">
         <div class="card-header">
             <i class="fas fa-table mr-1"></i>
@@ -80,10 +81,13 @@
                 buttons: [
                     {
                         text: 'Ekle',
-                        className: 'btn btn-success',
-                        action: function (e, dt, node, config) {
+                        attr: {
+                            id: "btnAdd"
+                        },
+                            className: 'btn btn-success',
+                        @*action: function (e, dt, node, config) {
                             alert('Button activated');
-                        }
+                        }*@
                     },
                     {
                         text: 'Yenile',
@@ -94,5 +98,17 @@
                     }
                 ]
             });
+    @* DataTables ends here*@
+    $(function () {
+        const url = '@Url.Action("Add","Category")';
+        const placeHolderDiv = $('#modalPlaceHolder');
+        $('#btnAdd').click(function () {
+            $.get(url).done(function (data)
+            {
+                placeHolderDiv.html(data);
+                placeHolderDiv.find(".modal").modal('show');
+            });
+        });
+    });
         });</script>
 }
