@@ -12,9 +12,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace CmnSoftwareBackend.API.Filters
 {
-    public class ValidationFilter:ActionFilterAttribute
+    public class ValidationFilter : ActionFilterAttribute
     {
-        public override async Task OnActionExecutionAsync(ActionExecutingContext context,ActionExecutionDelegate next)
+        public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             if (!context.ModelState.IsValid)
             {

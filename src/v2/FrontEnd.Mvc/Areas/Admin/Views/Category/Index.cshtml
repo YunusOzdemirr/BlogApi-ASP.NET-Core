@@ -1,0 +1,70 @@
+﻿@model CmnSoftwareBackend.Entities.Dtos.CategoryDtos.CategoryListDto
+
+@{
+    Layout = "_Layout";
+    ViewBag.Title = "Categories";
+
+}
+@if (Model.Categories != null)
+{
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table mr-1"></i>
+            DataTable Example
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="categoriesTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            @*<th>Image</th>*@
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Is Active</th>
+                            <th>Is Deleted</th>
+                            <th>Created Date</th>
+                            <th>Created By</th>
+                            <th>Modified Date</th>
+                            <th>Modified By</th>
+                        </tr>
+                    </thead>
+                    @*<tfoot>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Is Active</th>
+                                <th>Is Deleted</th>
+                                <th>Created Date</th>
+                                <th>Created By</th>
+                                <th>Modified Date</th>
+                                <th>Modified By</th>
+                            </tr>
+                        </tfoot>*@
+                    <tbody>
+                        @foreach (var category in Model.Categories)
+                        {
+                            <tr>
+                                <td>@category.Id</td>
+                                <td>@category.Name</td>
+                                <td>@category.Description</td>
+                                <td>@category.IsActive</td>
+                                <td>@category.IsDeleted</td>
+                                <td>@category.CreatedDate.Value.ToShortDateString()</td>
+                                <td>@category.CreatedByUserId</td>
+                                <td>@category.ModifiedDate.Value.ToShortDateString()</td>
+                                <td>@category.ModifiedByUserId</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+@section Scripts{
+    <script>$(document).ready(function () {
+            $('#categoriesTable').DataTable();
+        });</script>
+}

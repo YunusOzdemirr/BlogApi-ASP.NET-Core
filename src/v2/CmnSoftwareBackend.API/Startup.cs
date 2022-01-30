@@ -56,9 +56,9 @@ namespace CmnSoftwareBackend.API
             });
             services.AddControllers(options =>
             {
-                options.Filters.Add<ValidationFilter>();
-                options.Filters.Add<JsonExceptionFilter>();
-                // var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                // options.Filters.Add<ValidationFilter>();
+                // options.Filters.Add<JsonExceptionFilter>();
+                // var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedLoUser().Build();
                 //options.Filters.Add(new AuthorizeFilter(policy));
             }).AddNewtonsoftJson(options =>
             {
@@ -131,13 +131,13 @@ namespace CmnSoftwareBackend.API
             //Authorize Role
             services.AddIdentityCore<IdentityUser>()
                             .AddEntityFrameworkStores<CmnDbContext>()
-                            .AddDefaultTokenProviders();
+                            ;
 
             services.AddAuthorization(options =>
             options.AddPolicy("Role",
-                policy => policy.RequireClaim(claimType: ClaimTypes.Role, "Admin","NormalUser")));
+                policy => policy.RequireClaim(claimType: ClaimTypes.Role, "Admin", "NormalUser")));
 
-
+            //Hangfire
             services.AddHangfire(configuration => configuration
                         .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                         .UseSimpleAssemblyNameTypeSerializer()
@@ -153,7 +153,7 @@ namespace CmnSoftwareBackend.API
 
             services.AddHangfireServer();
             services.LoadMyServices();
-            services.AddAutoMapper(typeof(CategoryProfile), typeof(UserProfile), typeof(OperationClaimProfile), typeof(UserNotificationProfile), typeof(UserTokenProfile), typeof(ArticleProfile), typeof(CommentWithUserProfile),typeof(CommentWithoutUserProfile),typeof(ArticlePictureProfile));
+            services.AddAutoMapper(typeof(CategoryProfile), typeof(UserProfile), typeof(OperationClaimProfile), typeof(UserNotificationProfile), typeof(UserTokenProfile), typeof(ArticleProfile), typeof(CommentWithUserProfile), typeof(CommentWithoutUserProfile), typeof(ArticlePictureProfile));
             services.Configure<SmtpSettings>(Configuration.GetSection("SmtpSettings"));
             services.Configure<Shared.Utilities.Security.Jwt.TokenOptions>(Configuration.GetSection("TokenOptions"));
             services.AddLogging();

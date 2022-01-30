@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmnSoftwareBackend.Entities
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmnSoftwareBackend.Services", "CmnSoftwareBackend.Services\CmnSoftwareBackend.Services.csproj", "{60776979-0454-4BC2-A9C8-158E8D85D9BF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrontEnd.Mvc", "FrontEnd.Mvc\FrontEnd.Mvc.csproj", "{970BADDF-0E06-4DB9-8E3F-8F192874DF6C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{60776979-0454-4BC2-A9C8-158E8D85D9BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60776979-0454-4BC2-A9C8-158E8D85D9BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60776979-0454-4BC2-A9C8-158E8D85D9BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{970BADDF-0E06-4DB9-8E3F-8F192874DF6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{970BADDF-0E06-4DB9-8E3F-8F192874DF6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{970BADDF-0E06-4DB9-8E3F-8F192874DF6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{970BADDF-0E06-4DB9-8E3F-8F192874DF6C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
