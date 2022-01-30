@@ -22,9 +22,10 @@ namespace CmnSoftwareBackend.Entities.Concrete
         public ICollection<CategoryAndArticle> CategoryAndArticles { get; set; }
         public ICollection<CommentWithUser> CommentWithUsers { get; set; }
         public ICollection<CommentWithoutUser> CommentWithoutUsers { get; set; }
-            public Article()
+        public Article()
         {
             CreatedByUserId = UserId;
         }
+
     }
 }

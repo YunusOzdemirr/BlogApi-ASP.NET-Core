@@ -27,6 +27,8 @@ namespace FrontEnd.Mvc
             //Api Copy
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             //.AddRazorRuntimeCompilation tekrar derlemeye gerek kalmadan değişiklikleri sayfaya aktarıyor.
+            //.AddControllerWithViews sen bir mvc projesisin demek
+
             services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
             services.AddAutoMapper(typeof(Startup));
@@ -39,6 +41,7 @@ namespace FrontEnd.Mvc
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //Böyle bir sayfa yoksa 404 not found sayfası gelecek.
                 app.UseStatusCodePages();
             }
             else

@@ -156,7 +156,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             newArticlePicture.ModifiedDate = DateTime.Now;
             DbContext.ArticlePictures.Update(newArticlePicture);
             await DbContext.SaveChangesAsync();
-            return new DataResult(ResultStatus.Success, "");
+            return new DataResult(ResultStatus.Success, articlePictureUpdateDto);
 
         }
     }

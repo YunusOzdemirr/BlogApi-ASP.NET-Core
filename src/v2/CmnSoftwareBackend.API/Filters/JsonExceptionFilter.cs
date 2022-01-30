@@ -24,8 +24,8 @@ namespace CmnSoftwareBackend.API.Filters
         public void OnException(ExceptionContext context)
         {
             _logger.LogError(context.Exception, context.Exception.Message);
-            //context.Result = new ObjectResult(new ApiResult
-            //{
+            // context.Result = new ObjectResult(new ApiResult
+            // {
             //    Data = null,
             //    Message = context.Exception.Message,
             //    Detail = context.Exception.StackTrace,
@@ -33,10 +33,10 @@ namespace CmnSoftwareBackend.API.Filters
             //    ValidationErrors = null,
             //    StatusCode = HttpStatusCode.InternalServerError,
             //    Href = context.HttpContext.Request.GetDisplayUrl()
-            //})
-            //{
+            // })
+            // {
             //    StatusCode = 500
-            //};
+            // };
 
         }
     }

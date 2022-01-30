@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FrontEnd.Mvc.Areas.Admin.Models
+namespace FrontEnd.Mvc.Models
 {
     public class ErrorViewModel
     {

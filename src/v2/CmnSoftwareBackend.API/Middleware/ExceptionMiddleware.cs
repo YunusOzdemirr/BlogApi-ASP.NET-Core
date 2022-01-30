@@ -29,7 +29,7 @@ namespace CmnSoftwareBackend.API.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex,ex.Message);
+                _logger.LogError(ex, ex.Message);
                 switch (ex)
                 {
                     case NotFoundArgumentException error1:
@@ -39,7 +39,7 @@ namespace CmnSoftwareBackend.API.Middleware
                         await NotFoundArgumentsAsync(context, error2);
                         break;
                     case ValidationErrorsException error3:
-                            await ValidationErrorsAsync(context, error3);
+                        await ValidationErrorsAsync(context, error3);
                         break;
                     default:
                         await GeneralException(context, ex);
@@ -53,7 +53,7 @@ namespace CmnSoftwareBackend.API.Middleware
 
             var problemDetails = new
             {
-                ResultStatus = ResultStatus.Error,
+                ResultSteecvatus = ResultStatus.Error,
                 Message = exception.Message,
                 Detail = exception.StackTrace,
                 StatusCode = HttpStatusCode.InternalServerError,
