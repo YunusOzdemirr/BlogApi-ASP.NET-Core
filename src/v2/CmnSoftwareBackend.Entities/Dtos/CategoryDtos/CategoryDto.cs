@@ -15,6 +15,8 @@ namespace CmnSoftwareBackend.Entities.Dtos.CategoryDtos
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? CreatedDate { get; set; }
+        public int CreatedByUserId { get; set; }
         public DateTime? ModifiedDate { get; set; }
+        public int ModifiedByUserId { get; set; }
     }
 }

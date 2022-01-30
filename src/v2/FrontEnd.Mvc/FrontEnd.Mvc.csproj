@@ -5,27 +5,30 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CmnSoftwareBackend.Data\CmnSoftwareBackend.Data.csproj">
-      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-    </ProjectReference>
-    <ProjectReference Include="..\CmnSoftwareBackend.Entities\CmnSoftwareBackend.Entities.csproj">
+    <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+    <None Remove="AutoMapper" />
+    <None Remove="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
+    <None Remove="Areas\Admin\Views\Category\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.11" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CmnSoftwareBackend.Shared\CmnSoftwareBackend.Shared.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
     <ProjectReference Include="..\CmnSoftwareBackend.Services\CmnSoftwareBackend.Services.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
-    <ProjectReference Include="..\CmnSoftwareBackend.Shared\CmnSoftwareBackend.Shared.csproj">
+    <ProjectReference Include="..\CmnSoftwareBackend.Entities\CmnSoftwareBackend.Entities.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\CmnSoftwareBackend.Data\CmnSoftwareBackend.Data.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
-    <None Remove="AutoMapper" />
-    <None Remove="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="AutoMapper" Version="11.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.11" />
+    <Folder Include="Areas\Admin\Views\Category\" />
   </ItemGroup>
 </Project>
