@@ -7,10 +7,10 @@
 }
 @if (Model.Categories != null)
 {
-    <div class="card mb-4">
+    <div class="card mb-4 mt-2">
         <div class="card-header">
             <i class="fas fa-table mr-1"></i>
-            DataTable Example
+            Categories
         </div>
         <div class="card-body">
             <div class="table-responsive">
@@ -63,8 +63,36 @@
         </div>
     </div>
 }
+@if (Model == null)
+{
+    <div class="alert alert-danger">
+        Not Found Category <br />
+        Back to Dashboard <a class="alert-link" asp-area="Admin" asp-controller="Home" asp-action="Index">press</a>
+    </div>
+}
 @section Scripts{
     <script>$(document).ready(function () {
-            $('#categoriesTable').DataTable();
+            $('#categoriesTable').DataTable({
+                dom:
+                    "<'row'<'col-sm-3'l><'col-sm-6 text-center'B><'col-sm-3'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+                buttons: [
+                    {
+                        text: 'Ekle',
+                        className: 'btn btn-success',
+                        action: function (e, dt, node, config) {
+                            alert('Button activated');
+                        }
+                    },
+                    {
+                        text: 'Yenile',
+                        className: 'btn btn-warning',
+                        action: function (e, dt, node, config) {
+                            alert('Button activated');
+                        }
+                    }
+                ]
+            });
         });</script>
 }
