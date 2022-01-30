@@ -1,0 +1,12 @@
+{
+  "files.exclude": {
+    "**/.ionide": true,
+    "**/.vs": true,
+    "**/.vscode": true,
+    "**/bin": true,
+    "**/obj": true
+  },
+  "files.watcherExclude": {
+    "**/.DS_Store": true
+  }
+}
