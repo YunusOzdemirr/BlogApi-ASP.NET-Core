@@ -69,7 +69,8 @@ namespace CmnSoftwareBackend.API
             });
             services.AddCors(options =>
             {
-                options.AddPolicy("AllowReact", builder => builder.WithOrigins("http://localhost:3000", "http://localhost3001").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
+                options.AddDefaultPolicy(builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+                //options.AddPolicy("AllowReact", builder => builder.WithOrigins("http://localhost:3000", "http://localhost3001").AllowAnyHeader().AllowAnyMethod().AllowCredentials());
             });
 
             services.AddApiVersioning(options =>
@@ -83,7 +84,7 @@ namespace CmnSoftwareBackend.API
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Cmn.Api", Version = "v1" });
+                c.SwaggerDoc("v2", new OpenApiInfo { Title = "Cmn.Api", Version = "v2" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Description = @"JWT Authorization header using the Bearer scheme.
@@ -132,10 +133,9 @@ namespace CmnSoftwareBackend.API
             services.AddIdentityCore<IdentityUser>()
                             .AddEntityFrameworkStores<CmnDbContext>()
                             ;
-
-            services.AddAuthorization(options =>
-            options.AddPolicy("Role",
-                policy => policy.RequireClaim(claimType: ClaimTypes.Role, "Admin", "NormalUser")));
+            //  services.AddAuthorization(options =>
+            //options.AddPolicy("Role",
+            //    policy => policy.RequireClaim(claimType: ClaimTypes.Role, "Admin", "NormalUser")));
 
             //Hangfire
             services.AddHangfire(configuration => configuration
@@ -170,12 +170,17 @@ namespace CmnSoftwareBackend.API
             app.UseMiddleware<ExceptionMiddleware>();
             app.UseForwardedHeaders(new ForwardedHeadersOptions { ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto });
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Cmn.API v1"));
+            app.UseSwaggerUI(options =>
+            {
+                options.SwaggerEndpoint("/swagger/v2/swagger.json", "v2");
+            });
             app.UseHsts();
             //app.UseHttpsRedirection();
 
             app.UseRouting();
-            app.UseCors("AllowReact");
+            //app.UseCors("AllowReact");
+            app.UseCors();
+            app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -188,7 +193,10 @@ namespace CmnSoftwareBackend.API
 
             app.UseEndpoints(endpoints =>
             {
+                var pipeline = endpoints.CreateApplicationBuilder().Build();
                 endpoints.MapControllers();
+                endpoints.MapSwagger();
+                // endpoints.Map("/swagger/index.html", pipeline).RequireCors("asd");
             });
             //RecurringJobs.UpdateDailyCurrencyExchangeRate();
             //RecurringJobs.SaveDailyCurrencyExchangeRate();
