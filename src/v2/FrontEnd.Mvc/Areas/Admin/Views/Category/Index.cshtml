@@ -72,6 +72,7 @@
     </div>
 }
 @section Scripts{
+
     <script>$(document).ready(function () {
             $('#categoriesTable').DataTable({
                 dom:
@@ -99,6 +100,7 @@
                 ]
             });
     @* DataTables ends here*@
+    @* Ajax GET / Getting the _CategoryAddPartial as Modal Form starts from here *@
     $(function () {
         const url = '@Url.Action("Add","Category")';
         const placeHolderDiv = $('#modalPlaceHolder');
@@ -109,6 +111,46 @@
                 placeHolderDiv.find(".modal").modal('show');
             });
         });
+
+        @* Ajax GET / Getting the _CategoryAddPartial as Modal Form ends here *@
+    @* Ajax POST / Posting the FormData as CategoryAddDto starts from here *@
+        placeHolderDiv.on('click', '#btnSave', function (event) {
+            event.preventDefault();
+            @*this getting the form by id*@
+            const form = $('#form-category-add');
+            @*this getting the asp-action from html form*@
+            const actionUrl = form.attr('action');
+            const dataToSend = form.serialize();
+            @* first param is action *@
+            @*second param is sending the data to action*@
+            $.post(actionUrl, dataToSend).done(function (data) {
+                console.log(data);
+                const categoryAddAjaxModel = jQuery.parseJSON(data);
+                console.log(categoryAddAjaxModel);
+                const newFormBody = $('.modal-body', categoryAddAjaxModel.CategoryAddPartial);
+                placeHolderDiv.find('.modal-body').replaceWith(newFormBody);
+                placeHolderDiv.find('.modal').modal('hide');
+                const newTableRow = `
+            <tr>
+                <td>${categoryAddAjaxModel.CategoryDto.Id}</td>
+                <td> ${categoryAddAjaxModel.CategoryDto.Name}</td>
+                <td>${categoryAddAjaxModel.CategoryDto.Description}</td>
+                <td> ${categoryAddAjaxModel.CategoryDto.IsActive}</td>
+                <td>${categoryAddAjaxModel.CategoryDto.IsDeleted}</td>
+                <td>${categoryAddAjaxModel.CategoryDto.CreatedDate}</td>
+                <td>${categoryAddAjaxModel.CategoryDto.CreatedByUserId}</td>
+                <td>${categoryAddAjaxModel.CategoryDto.ModifiedDate}</td>
+                <td>${categoryAddAjaxModel.CategoryDto.ModifiedByUserId}</td>
+            </tr>`;
+                const newTableRowObject = $(newTableRow);
+                newTableRowObject.hide();
+                $('#categoriesTable').append(newTableRowObject);
+                newTableRowObject.fadeIn(3500);
+                toastr.success('Category is added successfully', 'Success')
+
+            });
+        });
+
     });
         });</script>
 }
