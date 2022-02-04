@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CmnSoftwareBackend.Services.AutoMapper.Profiles;
 using CmnSoftwareBackend.Services.Extensions;
@@ -31,7 +32,12 @@ namespace FrontEnd.Mvc
             //.AddRazorRuntimeCompilation tekrar derlemeye gerek kalmadan değişiklikleri sayfaya aktarıyor.
             //.AddControllerWithViews sen bir mvc projesisin demek
 
-            services.AddControllersWithViews().AddRazorRuntimeCompilation();
+            services.AddControllersWithViews().AddRazorRuntimeCompilation().AddJsonOptions(opt =>
+            {
+
+                opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                opt.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+            });
 
             services.AddAutoMapper(typeof(Startup), typeof(CategoryProfile), typeof(UserProfile), typeof(OperationClaimProfile), typeof(UserNotificationProfile), typeof(UserTokenProfile), typeof(ArticleProfile), typeof(CommentWithUserProfile), typeof(CommentWithoutUserProfile), typeof(ArticlePictureProfile));
 

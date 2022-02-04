@@ -9,7 +9,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form id="form-category-add" asp-action="AddAsync" asp-controller="Category" asp-area="Admin">
+                <form id="form-category-add" asp-action="Add" asp-controller="Category" asp-area="Admin">
                     <input name="IsValid" type="hidden" value="@ViewData.ModelState.IsValid.ToString()" />
                     <div asp-validation-summary="All" class="text-danger" id="validation-summary" aria-hidden="true" style="display:none"></div>
                     <div class="form-group">
@@ -42,7 +42,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal"><span class="fas fa-times"></span> Close</button>
-                <button id="BtnSave" type="button" class="btn btn-primary"><span class="fas fa-save"></span> Save changes</button>
+                <button id="btnSave" type="button" class="btn btn-primary"><span class="fas fa-save"></span> Save changes</button>
             </div>
         </div>
     </div>
