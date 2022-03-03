@@ -8210,3 +8210,19 @@ ClientConnectionId:00000000-0000-0000-0000-000000000000
 2022-02-04 02:48:06.8956 Info Validating config: TargetNames=allfile, ownFile-web, database, ConfigItems=75, FilePath=/Users/yunus/Documents/GitHub/BlogApi-ASP.NET-Core/src/v2/CmnSoftwareBackend.API/bin/Debug/net5.0/NLog.config
 2022-02-04 02:48:07.0509 Info Configuration initialized.
 2022-02-04 02:48:07.0518 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.11.13229. Product version: 4.7.11+33ed3a9f86277651e93ddf39cda64a046a06778b. GlobalAssemblyCache: False
+2022-02-22 20:45:31.8764 Info Message Template Auto Format enabled
+2022-02-22 20:45:31.9039 Info Loading assembly: NLog.Web.AspNetCore
+2022-02-22 20:45:31.9769 Info Adding target FileTarget(Name=allfile)
+2022-02-22 20:45:31.9788 Info Adding target FileTarget(Name=ownFile-web)
+2022-02-22 20:45:31.9950 Info Adding target DatabaseTarget(Name=database)
+2022-02-22 20:45:32.1039 Info Validating config: TargetNames=allfile, ownFile-web, database, ConfigItems=75, FilePath=/Users/yunus/Documents/GitHub/BlogApi-ASP.NET-Core/src/v2/CmnSoftwareBackend.API/bin/Debug/net5.0/NLog.config
+2022-02-22 20:45:32.2819 Info Configuration initialized.
+2022-02-22 20:45:32.2830 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.11.13229. Product version: 4.7.11+33ed3a9f86277651e93ddf39cda64a046a06778b. GlobalAssemblyCache: False
+2022-02-22 20:57:10.5120 Info Message Template Auto Format enabled
+2022-02-22 20:57:10.5435 Info Loading assembly: NLog.Web.AspNetCore
+2022-02-22 20:57:10.6008 Info Adding target FileTarget(Name=allfile)
+2022-02-22 20:57:10.6026 Info Adding target FileTarget(Name=ownFile-web)
+2022-02-22 20:57:10.6180 Info Adding target DatabaseTarget(Name=database)
+2022-02-22 20:57:10.7233 Info Validating config: TargetNames=allfile, ownFile-web, database, ConfigItems=75, FilePath=/Users/yunus/Documents/GitHub/BlogApi-ASP.NET-Core/src/v2/CmnSoftwareBackend.API/bin/Debug/net5.0/NLog.config
+2022-02-22 20:57:11.0355 Info Configuration initialized.
+2022-02-22 20:57:11.0372 Info NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c. File version: 4.7.11.13229. Product version: 4.7.11+33ed3a9f86277651e93ddf39cda64a046a06778b. GlobalAssemblyCache: False

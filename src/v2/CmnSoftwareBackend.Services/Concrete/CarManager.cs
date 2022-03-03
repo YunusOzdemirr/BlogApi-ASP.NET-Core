@@ -37,7 +37,7 @@ namespace CmnSoftwareBackend.Services.Concrete
         public Task<IDataResult> GetAllAsync(bool? isActive, bool? isDeleted, bool isAscending, int currentPage, int pageSize, OrderBy orderBy)
         {
             IQueryable query = DbContext.Set<Car>();
-            //   if (isActive.HasValue) query= query
+            if (isActive.HasValue) query = query.where;
             return null;
         }
 

@@ -83,12 +83,7 @@ namespace CmnSoftwareBackend.Services.Concrete
 
         }
 
-        public AccessToken CreateAccessToken(User user)
-        {
-            var claims = GetClaims(user);
-            var accessToken = _jwtHelper.CreateToken(user, claims);
-            return accessToken;
-        }
+
 
         public async Task<IDataResult> ForgotPasswordAsync(string emailAddress)
         {
@@ -97,7 +92,7 @@ namespace CmnSoftwareBackend.Services.Concrete
 
             var user = await DbContext.Users.FirstOrDefaultAsync(u => u.EmailAddress == emailAddress);
             if (user == null)
-            throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir mail adresi bulunumamakta", "emailAddress"));
+                throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Böyle bir mail adresi bulunumamakta", "emailAddress"));
 
             //create random password
             Random random = new Random();
@@ -132,11 +127,19 @@ namespace CmnSoftwareBackend.Services.Concrete
                          select new OperationClaim { Id = operationClaim.Id, Name = operationClaim.Name };
             return result.ToList();
         }
+        public AccessToken CreateAccessToken(User user)
+        {
+            var claims = GetClaims(user);
+            var accessToken = _jwtHelper.CreateToken(user, claims);
+            return accessToken;
+        }
 
         public async Task<IDataResult> LoginAsync(UserLoginDto userLoginDto)
         {
+            //This method is validating the dto
             ValidationTool.Validate(new UserLoginDtoValidator(), userLoginDto);
 
+            //this line is query to database
             var user = await DbContext.Users.AsNoTracking().SingleOrDefaultAsync(u => u.EmailAddress == userLoginDto.EmailAddress);
             if (user == null)
                 throw new NotFoundArgumentException(Messages.General.ValidationError(),
@@ -145,7 +148,7 @@ namespace CmnSoftwareBackend.Services.Concrete
             if (HashingHelper.VerifyPasswordHash(userLoginDto.Password, user.PasswordHash, user.PasswordSalt))
             {
                 if (!user.IsActive)
-                    throw new NotFoundArgumentException(Messages.General.ValidationError(),new Error("Giriş  yapabilmek için hesabınızın aktif olması gereklidir", "IsActive"));
+                    throw new NotFoundArgumentException(Messages.General.ValidationError(), new Error("Giriş  yapabilmek için hesabınızın aktif olması gereklidir", "IsActive"));
                 if (!user.IsEmailAddressVerified)
                     throw new NotFoundArgumentException(Messages.General.ValidationError(),
                         new Error("Giriş yapabilmeniz için e-posta adresinizi doğrulamanız gerekiyor.", "IsEmailAddressVerified"));
